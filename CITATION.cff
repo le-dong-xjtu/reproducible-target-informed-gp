@@ -7,7 +7,7 @@ authors:
     given-names: Le
     affiliation: "Xi'an Jiaotong University"
     email: leroi_2024@stu.xjtu.edu.cn
-version: 1.5.0
+version: 1.6.0
 date-released: 2026-10-16
 repository-code: "https://github.com/le-dong-xjtu/reproducible-target-informed-gp"
 license: MIT
