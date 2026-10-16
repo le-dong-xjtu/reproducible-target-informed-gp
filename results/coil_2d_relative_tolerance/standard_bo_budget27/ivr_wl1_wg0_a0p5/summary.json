@@ -1,10 +1,10 @@
 {
   "cases": 870,
   "qualification_rate": 1.0,
-  "exact_optimum_cases": 836,
-  "exact_optimum_rate": 0.960919540229885,
-  "all_case_mean_u": 0.0006001650370892237,
-  "targetwise_trimmed_mean_u": 0.00038285325957130103,
-  "worst_seed_mean_u": 0.0012943092716875331,
-  "worst_seed": 20261016
+  "exact_optimum_cases": 827,
+  "exact_optimum_rate": 0.9505747126436782,
+  "all_case_mean_u": 0.0008187065304854473,
+  "targetwise_trimmed_mean_u": 0.0005541230147253107,
+  "worst_seed_mean_u": 0.0015131918467074512,
+  "worst_seed": 20261020
 }

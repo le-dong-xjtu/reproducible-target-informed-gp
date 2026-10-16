@@ -68,7 +68,7 @@ def main():
     summary = {
         "targets_mH": list(TARGETS), "seeds": list(base.SEEDS),
         "pre_uncertainty_weight": WEIGHT,
-        "budget": {"initial": 1, "sequential": 14, "confirmation": 12, "total": 27},
+        "budget": {"initial": 1, "sequential": 16, "confirmation": 10, "total": 27},
         "qualification": f"{sum(r['qualified']=='True' for r in rows)}/{len(rows)}",
         "exact_optima": f"{int(np.sum(values <= 1e-12))}/{len(rows)}",
         "baseline_exact_optima": f"{int(np.sum(base_values <= 1e-12))}/{len(rows)}",

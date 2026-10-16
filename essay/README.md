@@ -23,12 +23,10 @@ nine-page IEEE-style paper.
   claim to its exact generating script and retained raw data.
 - `data/tcfei_budget27_results_10seeds.csv` and `data/tcfei_budget27_summary.json` archive the exploratory TC-FEI evaluation; they are not used for the current main claim.
 - `../results/coil_2d_relative_tolerance/cei_budget27/`, `standard_bo_budget27/`, and `global_dual_gp_budget27/` contain the matched 870-case GP-cEI, GP-cLCB, GP-IVR, and balanced global dual-response benchmarks used in Fig. 4. Each contains raw results and a machine-readable summary.
-- `data/center_start_cei_lr/` contains the full 870-case deterministic-center,
-  probability-of-feasibility-only control. `data/center_feasibility_smoke/`
-  contains the ten-target screen that selects the working 75/25
+- `data/center_feasibility_smoke/` contains the ten-target screen that selects the working 75/25
   feasibility/inductance-uncertainty rule. `data/center_feasibility_low_targets/`
   contains the explicitly post-hoc diagnostic on the random-six baseline's
-  four weak targets. All three directories retain raw rows, summaries, and
+  four low-inductance targets. Both directories retain raw rows, summaries, and
   manifests, with generating code under `scripts/run_center_*.py`.
 - `data/center_cosine_stopping_smoke/`, `data/center_stopping_1pct_smoke/`,
   and `data/center_stopping_1pct_deterministic_gp_k5/` contain the matched

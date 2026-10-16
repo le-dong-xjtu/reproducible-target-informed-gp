@@ -1,15 +1,15 @@
 {
   "cases": 870,
   "qualification_rate": 1.0,
-  "exact_optimum_rate": 0.9885057471264368,
-  "exact_optimum_cases": 860,
-  "all_case_mean_u": 0.0004678082138940124,
-  "targetwise_trimmed_mean_u": 0.00021713622192551696,
-  "worst_seed_mean_u": 0.002487145211207885,
+  "exact_optimum_rate": 0.996551724137931,
+  "exact_optimum_cases": 867,
+  "all_case_mean_u": 0.00016144621596476404,
+  "targetwise_trimmed_mean_u": 6.446828163171081e-05,
+  "worst_seed_mean_u": 0.0010987159065939539,
   "worst_seed": 20261020,
   "decision_sources": {
-    "active_acquisition": 845,
-    "validation": 20,
-    "initial": 5
+    "active_acquisition": 860,
+    "initial": 5,
+    "validation": 5
   }
 }

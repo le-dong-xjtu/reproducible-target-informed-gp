@@ -24,7 +24,10 @@ from compare_surrogate_targets import ROOT, truth_grid, write_json
 SEEDS = tuple(range(20261015, 20261025))
 EPSILON = 0.025
 BUDGET = 27
-OUTPUT = ROOT / "results" / "coil_2d_relative_tolerance" / "cei_budget27"
+MODEL_EVALUATIONS = 17
+FINAL_VERIFICATIONS = 10
+OUTPUT = (ROOT / "results" / "coil_2d_relative_tolerance" /
+          "cei_budget27")
 RESULTS = OUTPUT / "cei_results.csv"
 FIELDS = ("method", "budget", "seed", "target_mH", "qualified",
           "relative_resistance_regret", "bounded_loss_u", "decision_T",
@@ -44,7 +47,13 @@ def run_one(task):
         (workspace / "results").mkdir()
         settings_path = workspace / "config" / "surrogates" / "target_conditioned_gp.json"
         settings = json.loads(settings_path.read_text())
-        settings.update({"seed": seed, "target_mH": target, "acquisition_mode": "cei"})
+        settings.update({
+            "seed": seed,
+            "target_mH": target,
+            "acquisition_mode": "cei",
+            "maximum_true_evaluations": MODEL_EVALUATIONS,
+            "final_validation_count": FINAL_VERIFICATIONS,
+        })
         write_json(settings_path, settings)
         script = workspace / "methods" / "target_informed_gp" / "gp_conventional_acquisition_baselines.py"
         with open(os.devnull, "w") as sink, contextlib.redirect_stdout(sink), contextlib.redirect_stderr(sink):
@@ -116,7 +125,7 @@ def main():
         "status": "running", "method": "conventional GP-cEI", "budget": BUDGET,
         "seeds": list(SEEDS), "targets_mH": list(targets),
         "relative_tolerance": EPSILON,
-        "budget_composition": "6 initial + 9 cEI acquisitions + 12 validations",
+        "budget_composition": "6 initial + 11 cEI acquisitions + 10 final verifications",
         "matched_control_for": "TC-FEI",
     })
     completed = {(int(row["seed"]), int(float(row["target_mH"]))) for row in read_rows(RESULTS)}

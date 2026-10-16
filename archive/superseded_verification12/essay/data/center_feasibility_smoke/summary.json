@@ -1,0 +1,151 @@
+{
+  "targets_mH": [
+    1,
+    11,
+    20,
+    30,
+    39,
+    49,
+    58,
+    68,
+    77,
+    87
+  ],
+  "seeds": [
+    20261015,
+    20261016,
+    20261017,
+    20261018,
+    20261019,
+    20261020,
+    20261021,
+    20261022,
+    20261023,
+    20261024
+  ],
+  "budget": {
+    "initial": 1,
+    "sequential": 14,
+    "confirmation": 12,
+    "total": 27
+  },
+  "pre_feasibility_score": "(1-w)*unit(p_feasible)+w*unit(sigma_L)",
+  "post_feasibility_score": "ordinary cEI",
+  "results": [
+    {
+      "pre_uncertainty_weight": "0.25",
+      "cases": 100,
+      "qualification_rate": 1.0,
+      "exact_optimum_rate": 1.0,
+      "exact_optimum_cases": 100,
+      "mean_bounded_loss_u": 0.0,
+      "mean_difference_vs_random_six_baseline_u": 0.0,
+      "paired_wins_ties_losses": [
+        0,
+        100,
+        0
+      ],
+      "feasible_before_confirmation_cases": 100,
+      "median_first_feasible_evaluation": 6.0,
+      "mean_first_feasible_evaluation": 5.9,
+      "maximum_first_feasible_evaluation": 9,
+      "targets_qualifying_all_ten_seeds": [
+        1,
+        11,
+        20,
+        30,
+        39,
+        49,
+        58,
+        68,
+        77,
+        87
+      ]
+    },
+    {
+      "pre_uncertainty_weight": "0.5",
+      "cases": 100,
+      "qualification_rate": 1.0,
+      "exact_optimum_rate": 1.0,
+      "exact_optimum_cases": 100,
+      "mean_bounded_loss_u": 0.0,
+      "mean_difference_vs_random_six_baseline_u": 0.0,
+      "paired_wins_ties_losses": [
+        0,
+        100,
+        0
+      ],
+      "feasible_before_confirmation_cases": 100,
+      "median_first_feasible_evaluation": 8.0,
+      "mean_first_feasible_evaluation": 8.18,
+      "maximum_first_feasible_evaluation": 15,
+      "targets_qualifying_all_ten_seeds": [
+        1,
+        11,
+        20,
+        30,
+        39,
+        49,
+        58,
+        68,
+        77,
+        87
+      ]
+    },
+    {
+      "pre_uncertainty_weight": "0.75",
+      "cases": 100,
+      "qualification_rate": 1.0,
+      "exact_optimum_rate": 0.98,
+      "exact_optimum_cases": 98,
+      "mean_bounded_loss_u": 0.0001548549286498491,
+      "mean_difference_vs_random_six_baseline_u": 0.0001548549286498491,
+      "paired_wins_ties_losses": [
+        0,
+        98,
+        2
+      ],
+      "feasible_before_confirmation_cases": 58,
+      "median_first_feasible_evaluation": 13.0,
+      "mean_first_feasible_evaluation": 11.0,
+      "maximum_first_feasible_evaluation": 15,
+      "targets_qualifying_all_ten_seeds": [
+        1,
+        11,
+        20,
+        30,
+        39,
+        49,
+        58,
+        68,
+        77,
+        87
+      ]
+    },
+    {
+      "pre_uncertainty_weight": "pF_only",
+      "cases": 100,
+      "qualification_rate": 0.5,
+      "exact_optimum_rate": 0.5,
+      "exact_optimum_cases": 50,
+      "mean_bounded_loss_u": 0.5,
+      "mean_difference_vs_random_six_baseline_u": 0.5,
+      "paired_wins_ties_losses": [
+        0,
+        50,
+        50
+      ],
+      "feasible_before_confirmation_cases": 50,
+      "median_first_feasible_evaluation": 5.0,
+      "mean_first_feasible_evaluation": 5.6,
+      "maximum_first_feasible_evaluation": 8,
+      "targets_qualifying_all_ten_seeds": [
+        1,
+        11,
+        20,
+        30,
+        39
+      ]
+    }
+  ]
+}

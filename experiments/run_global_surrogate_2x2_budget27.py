@@ -2,10 +2,10 @@
 
 Factors:
   model family: Gaussian process or ten-network MLP ensemble;
-  model-building design: 15 random samples or 6 random + 9 uncertainty samples.
+  model-building design: 17 random samples or 6 random + 11 uncertainty samples.
 
 Every variant models both inductance and resistance, uses alpha=0.5 for active
-selection, and applies the same 12-point resistance-aware validation rule.
+selection, and applies the same 10-point resistance-aware verification rule.
 """
 from __future__ import annotations
 
@@ -32,9 +32,9 @@ SEEDS = tuple(range(20261015, 20261025))
 TARGETS = tuple(range(1, 88))
 EPSILON = 0.025
 BUDGET = 27
-MODEL_EVALUATIONS = 15
+MODEL_EVALUATIONS = 17
 INITIAL_EVALUATIONS = 6
-VALIDATIONS = 12
+VALIDATIONS = 10
 ENSEMBLE_SIZE = 10
 ALPHA = 0.5
 VARIANTS = ("gp_random", "gp_active", "ensemble_random", "ensemble_active")
@@ -240,11 +240,11 @@ def main():
         "status": "complete", "budget": BUDGET, "seeds": list(SEEDS),
         "targets_mH": list(TARGETS), "variants": list(VARIANTS),
         "ensemble_size": ENSEMBLE_SIZE, "global_response_alpha": ALPHA,
-        "budget_composition": "15 reusable model-building evaluations + 12 validations per target",
-        "random_policy": "15 seeded uniform random samples",
-        "active_policy": "6 seeded random samples + 9 balanced scaled L/R uncertainty acquisitions",
+        "budget_composition": "17 reusable model-building evaluations + 10 final verifications per target",
+        "random_policy": "17 seeded uniform random samples",
+        "active_policy": "6 seeded random samples + 11 balanced scaled L/R uncertainty acquisitions",
         "validation": "same probability-of-feasibility times scaled resistance score for all variants",
-        "decision_pool": "12 target-specific physical validations only",
+        "decision_pool": "10 target-specific final model evaluations only",
     })
     print(json.dumps(summaries, indent=2))
 

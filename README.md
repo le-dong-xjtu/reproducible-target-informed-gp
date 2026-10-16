@@ -1,8 +1,8 @@
-# Reproducible Target-Informed GP Optimization
+# Deterministic Target-Conditioned GP Optimization
 
 Code, configurations, row-level results, and reproducibility checks for
-**“Reproducible Target-Informed Gaussian-Process Optimization for
-Data-Efficient Electromagnetic Design.”**
+**“Deterministic Target-Conditioned Gaussian-Process Optimization for
+Small-Budget Electromagnetic Design.”**
 
 Public repository: https://github.com/le-dong-xjtu/reproducible-target-informed-gp
 
@@ -11,7 +11,7 @@ workflow. Its core contribution is reproducible allocation of observations:
 deterministic center initialization, uncertainty-aware feasibility discovery,
 fixed Gaussian-process hyperparameter starts, a dimension-dependent minimum
 sample threshold, relative constrained-expected-improvement stopping, and a
-final verification batch included in the evaluation budget. Wireless-power-
+ten-evaluation final verification batch included in the evaluation budget. Wireless-power-
 transfer (WPT) experiments test the frozen workflow on numerical and direct
 field-solver models.
 

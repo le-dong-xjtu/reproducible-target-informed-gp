@@ -19,6 +19,8 @@ SEEDS = tuple(range(20261015, 20261025))
 TARGETS = tuple(range(1, 88))
 EPSILON = 0.025
 BUDGET = 27
+MODEL_EVALUATIONS = 17
+FINAL_VERIFICATIONS = 10
 FIELDS = ("method", "budget", "seed", "target_mH", "qualified",
           "relative_resistance_regret", "bounded_loss_u", "decision_T",
           "decision_n", "decision_L_mH", "decision_R_ohm", "decision_source")
@@ -41,6 +43,8 @@ def run_one(task):
             "seed": seed, "target_mH": target, "acquisition_mode": mode,
             "local_weight": local_weight, "global_weight": global_weight,
             "global_response_alpha": alpha,
+            "maximum_true_evaluations": MODEL_EVALUATIONS,
+            "final_validation_count": FINAL_VERIFICATIONS,
         })
         write_json(settings_path, settings)
         script = workspace / "methods" / "target_informed_gp" / "gp_conventional_acquisition_baselines.py"
@@ -105,7 +109,8 @@ def main():
         parser.error("alpha must lie in [0, 1]")
     targets = tuple(args.targets)
     tag = f"{args.mode}_wl{args.local_weight:g}_wg{args.global_weight:g}_a{args.alpha:g}".replace(".", "p")
-    output = ROOT / "results" / "coil_2d_relative_tolerance" / "standard_bo_budget27" / tag
+    output = (ROOT / "results" / "coil_2d_relative_tolerance" /
+              "standard_bo_budget27" / tag)
     results = output / "results.csv"
     output.mkdir(parents=True, exist_ok=True)
     write_json(output / "manifest.json", {
@@ -113,7 +118,7 @@ def main():
         "seeds": list(SEEDS), "targets_mH": list(targets),
         "local_weight": args.local_weight, "global_weight": args.global_weight,
         "global_response_alpha": args.alpha,
-        "budget_composition": "6 initial + 9 acquisitions + 12 validations",
+        "budget_composition": "6 initial + 11 acquisitions + 10 final verifications",
     })
     completed = {(int(row["seed"]), int(float(row["target_mH"]))) for row in read_rows(results)}
     tasks = [(args.mode, seed, target, args.local_weight, args.global_weight, args.alpha)

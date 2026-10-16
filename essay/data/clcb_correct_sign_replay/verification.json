@@ -4,17 +4,17 @@
     "lower_bound": "mean_R - kappa*std_R",
     "kappa": 2.0,
     "maximized_acquisition": "p_feasible*exp(-unit_scale(lower_bound))",
-    "source": "methods/target_informed_gp/gp_conventional_acquisition_baselines.py",
+    "source": "/Users/saishangjiangnandong/Desktop/Essay 2 (Algorithmic Discussion)/methods/target_informed_gp/gp_conventional_acquisition_baselines.py",
     "source_sha256": "e6fc9974fa4ac74b21649f6899d96b3ec3034c33288da3dda02521a5a6372d24"
   },
   "fresh_replay_summary": {
     "cases": 870,
     "qualification_rate": 1.0,
-    "exact_optimum_cases": 789,
-    "exact_optimum_rate": 0.906896551724138,
-    "all_case_mean_u": 0.005815926708405649,
-    "targetwise_trimmed_mean_u": 0.0037163011328341885,
-    "worst_seed_mean_u": 0.015325221320810493,
+    "exact_optimum_cases": 829,
+    "exact_optimum_rate": 0.9528735632183908,
+    "all_case_mean_u": 0.0027380531429969063,
+    "targetwise_trimmed_mean_u": 0.0010821209079032328,
+    "worst_seed_mean_u": 0.008464885285595993,
     "worst_seed": 20261023
   },
   "reference_rows": 870,

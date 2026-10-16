@@ -1,7 +1,7 @@
 {
   "initial_samples": 6,
-  "maximum_true_evaluations": 15,
-  "final_validation_count": 12,
+  "maximum_true_evaluations": 17,
+  "final_validation_count": 10,
   "seed": 20261015,
   "alpha": 0.5,
   "relative_tolerance": 0.025,

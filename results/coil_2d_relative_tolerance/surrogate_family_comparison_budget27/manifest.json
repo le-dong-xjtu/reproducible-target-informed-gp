@@ -110,9 +110,9 @@
   ],
   "ensemble_size": 10,
   "global_response_alpha": 0.5,
-  "budget_composition": "15 reusable model-building evaluations + 12 validations per target",
-  "random_policy": "15 seeded uniform random samples",
-  "active_policy": "6 seeded random samples + 9 balanced scaled L/R uncertainty acquisitions",
+  "budget_composition": "17 reusable model-building evaluations + 10 final verifications per target",
+  "random_policy": "17 seeded uniform random samples",
+  "active_policy": "6 seeded random samples + 11 balanced scaled L/R uncertainty acquisitions",
   "validation": "same probability-of-feasibility times scaled resistance score for all variants",
-  "decision_pool": "12 target-specific physical validations only"
+  "decision_pool": "10 target-specific final model evaluations only"
 }

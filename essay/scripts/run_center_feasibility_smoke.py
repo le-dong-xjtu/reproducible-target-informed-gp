@@ -29,15 +29,10 @@ def summarize(rows):
                          "cei_budget27"/"cei_results.csv")
     baseline = {(int(r["seed"]), int(float(r["target_mH"]))): r
                 for r in baseline_rows}
-    center_rows = read(base.ROWS)
-    center = {(int(r["seed"]), int(r["target_mH"])): r
-              for r in center_rows}
     result = []
     for label, group in [(str(w), [r for r in rows
                                     if float(r["pre_uncertainty_weight"]) == w])
-                         for w in WEIGHTS] + [("pF_only", [center[s, t]
-                                                           for s in base.SEEDS
-                                                           for t in TARGETS])]:
+                         for w in WEIGHTS]:
         keys = [(int(r["seed"]), int(r["target_mH"])) for r in group]
         values = np.asarray([float(r["bounded_loss_u"]) for r in group])
         base_values = np.asarray([float(baseline[k]["bounded_loss_u"]) for k in keys])
@@ -95,7 +90,7 @@ def main():
         raise RuntimeError(f"incomplete smoke test: {len(rows)}/{expected}")
     summary = {
         "targets_mH": list(TARGETS), "seeds": list(base.SEEDS),
-        "budget": {"initial": 1, "sequential": 14, "confirmation": 12, "total": 27},
+        "budget": {"initial": 1, "sequential": 16, "confirmation": 10, "total": 27},
         "pre_feasibility_score": "(1-w)*unit(p_feasible)+w*unit(sigma_L)",
         "post_feasibility_score": "ordinary cEI",
         "results": summarize(rows),
@@ -104,7 +99,7 @@ def main():
     (OUT/"manifest.json").write_text(json.dumps({
         "status": "complete", "script": str(__file__),
         "targets_mH": list(TARGETS), "weights": list(WEIGHTS),
-        "seeds": list(base.SEEDS), "same_center_kernel_budget_and_confirmation_as_center_control": True,
+        "seeds": list(base.SEEDS), "uniform_budget": "1 initial + 16 sequential + 10 final verifications",
     }, indent=2)+"\n")
     print(json.dumps(summary, indent=2))
 

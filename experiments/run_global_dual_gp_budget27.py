@@ -22,7 +22,8 @@ SEEDS = tuple(range(20261015, 20261025))
 TARGETS = tuple(range(1, 88))
 EPSILON = 0.025
 BUDGET = 27
-VALIDATIONS = 12
+MODEL_EVALUATIONS = 17
+VALIDATIONS = 10
 FIELDS = ("method", "budget", "seed", "target_mH", "qualified",
           "relative_resistance_regret", "bounded_loss_u", "decision_T",
           "decision_n", "decision_L_mH", "decision_R_ohm")
@@ -47,7 +48,12 @@ def run_seed(task):
         (workspace / "results").mkdir()
         settings_path = workspace / "config" / "surrogates" / "global_dual_gp.json"
         settings = json.loads(settings_path.read_text())
-        settings.update({"seed": seed, "alpha": alpha})
+        settings.update({
+            "seed": seed,
+            "alpha": alpha,
+            "maximum_true_evaluations": MODEL_EVALUATIONS,
+            "final_validation_count": VALIDATIONS,
+        })
         write_json(settings_path, settings)
         script = workspace / "methods" / "surrogate_selection" / "gp_dual_response.py"
         with open(os.devnull, "w") as sink, contextlib.redirect_stdout(sink), contextlib.redirect_stderr(sink):
@@ -114,7 +120,8 @@ def main():
     if not 0 <= args.alpha <= 1:
         parser.error("alpha must lie in [0, 1]")
     tag = f"alpha_{args.alpha:g}".replace(".", "p")
-    output = ROOT / "results" / "coil_2d_relative_tolerance" / "global_dual_gp_budget27" / tag
+    output = (ROOT / "results" / "coil_2d_relative_tolerance" /
+              "global_dual_gp_budget27" / tag)
     results = output / "results.csv"
     output.mkdir(parents=True, exist_ok=True)
     completed = set()
@@ -143,7 +150,7 @@ def main():
         "targets_mH": list(TARGETS),
         "acquisition": "(1-alpha)*sigma_L/s_L + alpha*sigma_R/s_R",
         "scales": "fixed after the six initial observations",
-        "budget_composition": "15 reusable model-building evaluations + 12 validations per target",
+        "budget_composition": "17 reusable model-building evaluations + 10 final verifications per target",
     })
     print(json.dumps(summary, indent=2))
 

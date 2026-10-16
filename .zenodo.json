@@ -1,5 +1,5 @@
 {
-  "title": "Reproducible Target-Informed Gaussian-Process Optimization for Data-Efficient Electromagnetic Design",
+  "title": "Deterministic Target-Conditioned Gaussian-Process Optimization for Small-Budget Electromagnetic Design",
   "description": "Code, configurations, row-level results, and validation scripts for a reproducible low-budget constrained Gaussian-process optimization workflow and its electromagnetic-design applications.",
   "upload_type": "software",
   "creators": [

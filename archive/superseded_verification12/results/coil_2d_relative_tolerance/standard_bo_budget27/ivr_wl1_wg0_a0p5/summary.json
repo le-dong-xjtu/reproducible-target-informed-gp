@@ -1,0 +1,10 @@
+{
+  "cases": 870,
+  "qualification_rate": 1.0,
+  "exact_optimum_cases": 836,
+  "exact_optimum_rate": 0.960919540229885,
+  "all_case_mean_u": 0.0006001650370892237,
+  "targetwise_trimmed_mean_u": 0.00038285325957130103,
+  "worst_seed_mean_u": 0.0012943092716875331,
+  "worst_seed": 20261016
+}

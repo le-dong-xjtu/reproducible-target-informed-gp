@@ -1,6 +1,6 @@
 {
   "status": "complete",
-  "script": "/Users/saishangjiangnandong/Desktop/algorithm_discussion/essay/scripts/run_center_feasibility_smoke.py",
+  "script": "/Users/saishangjiangnandong/Desktop/Essay 2 (Algorithmic Discussion)/essay/scripts/run_center_feasibility_smoke.py",
   "targets_mH": [
     1,
     11,
@@ -30,5 +30,5 @@
     20261023,
     20261024
   ],
-  "same_center_kernel_budget_and_confirmation_as_center_control": true
+  "uniform_budget": "1 initial + 16 sequential + 10 final verifications"
 }

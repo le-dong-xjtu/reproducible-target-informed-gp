@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: "If you use this software or evidence package, please cite the accompanying paper."
-title: "Reproducible Target-Informed Gaussian-Process Optimization for Data-Efficient Electromagnetic Design"
+title: "Deterministic Target-Conditioned Gaussian-Process Optimization for Small-Budget Electromagnetic Design"
 type: software
 authors:
   - family-names: Dong

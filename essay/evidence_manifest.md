@@ -28,8 +28,6 @@ Paths are relative to the repository root unless stated otherwise.
 | Fig. 4, GP acquisitions | `experiments/run_cei_budget27.py`, `experiments/run_standard_bo_budget27.py`, `experiments/run_global_dual_gp_budget27.py` | `results/coil_2d_relative_tolerance/cei_budget27/cei_results.csv`; `standard_bo_budget27/clcb_wl1_wg0_a0p5/results.csv`; `standard_bo_budget27/ivr_wl1_wg0_a0p5/results.csv`; global-GP data above | `essay/scripts/render_figures.py` |
 | Correct-sign cLCB replay audit | `essay/scripts/verify_clcb_replay.py`; acquisition implementation in `methods/target_informed_gp/gp_conventional_acquisition_baselines.py` | `essay/data/clcb_correct_sign_replay/results.csv`, `verification.json` | exact rowwise comparison with the archived Fig. 4 input |
 | Reusable-GP calibration diagnostic | `experiments/analyze_gp_errors_budget27.py` | `essay/data/gp_budget_27_grid_error_by_seed.csv`, `gp_budget_27_error_analysis.json` | same analysis script; summary reported in text |
-| Budget-allocation control in the target-conditioned section | `essay/scripts/benchmark_gp_cei_budgets.py` | `essay/data/gp_cei_budget_scaling_results.csv`, `gp_cei_budget_scaling_summary.json` | same benchmark script |
-| Full deterministic-center, $p_F$-only control | `essay/scripts/run_center_start_control.py` | `essay/data/center_start_cei_lr/results.csv`, `summary.json`, `manifest.json` | analysis embedded in the experiment script; interpretation in `essay/center_start_cei_lr.md` |
 | Ten-target feasibility-weight screen | `essay/scripts/run_center_feasibility_smoke.py` | `essay/data/center_feasibility_smoke/results.csv`, `summary.json`, `manifest.json` | analysis embedded in the experiment script |
 | Post-hoc $L_t=2$--5 mH initialization diagnostic | `essay/scripts/run_center_feasibility_low_targets.py` | `essay/data/center_feasibility_low_targets/results.csv`, `summary.json`, `manifest.json` | analysis embedded in the experiment script |
 | Prespecified 1,000-seed initial-coverage screen | `essay/scripts/seed_initialization_screen.py` | `essay/data/initialization_screen_1000/seed_initialization_1000x87.csv`, `seed_initialization_points.csv`, `targetwise_initialization_summary.csv`, `screening_summary.json` | `essay/scripts/verify_initialization_screen.py`; initialization only, not GP-cEI trajectories |
@@ -38,8 +36,8 @@ Paths are relative to the repository root unless stated otherwise.
 | Fig. 5(a), stopping and deterministic-GP screen | `essay/scripts/run_center_cosine_stopping_smoke.py`; deterministic optimizer in `run_center_start_control.py` | `essay/data/center_cosine_stopping_smoke/`, `center_stopping_1pct_smoke/`, `center_stopping_1pct_deterministic_gp_k5/` | `essay/scripts/render_automated_stopping.py` |
 | Frozen stopping test on 73 held-out targets | `essay/scripts/run_automatic_gp_2d.py` | `essay/data/center_stopping_heldout_73/results.csv`, `summary.json`, `manifest.json` | analysis embedded in the experiment script; independently checked by the audit |
 | Target-conditioned GP calibration exactly at stopping | `essay/scripts/analyze_stopping_gp_calibration.py` | `essay/data/stopping_gp_calibration_heldout_73/results.csv`, `summary.json`, `manifest.json` | reports global and true-feasible-region coverage before confirmations |
-| Fig. 5(b), automated 8-D WPT trace | `essay/scripts/run_automatic_gp_wpt8d.py`; oracle in `essay/scripts/wpt_partial_inductance_model.py` | `essay/data/wpt_8d_automated_cei/`; forced-budget control in `wpt_8d_automated_cei_fixed_b50_control/` | `essay/scripts/render_automated_stopping.py` |
-| Fig. 6, selected WPT geometry | `essay/scripts/run_automatic_gp_wpt8d.py`; oracle in `essay/scripts/wpt_partial_inductance_model.py` | `essay/data/wpt_8d_automated_cei/result.json` | `essay/scripts/render_wpt_selected_geometry.py` |
+| Fig. 5(b), automated 8-D WPT trace | `essay/scripts/run_automatic_gp_wpt8d.py` | `essay/data/wpt_8d_automated_cei/`; forced-budget control in `wpt_8d_automated_cei_fixed_b50_control/` | `essay/scripts/render_automated_stopping.py` |
+| Fig. 6, selected WPT geometry | `essay/scripts/run_automatic_gp_wpt8d.py` | `essay/data/wpt_8d_automated_cei/result.json` | `essay/scripts/render_wpt_selected_geometry.py` |
 | Frozen 21-target matched 8-D WPT sweep and representative table | `essay/scripts/run_wpt_8d_multitarget_validation.py` | `essay/data/wpt_8d_multitarget_validation/results.csv`, `summary.json`, `manifest.json` | automatic and conventional controls use deterministic Sobol candidate streams; the audit recomputes the paired Wilcoxon result and the four 17-observation guard-boundary cases |
 | Development-only confirmation-count ablation | `essay/scripts/analyze_confirmation_ablation.py` | `essay/data/confirmation_count_ablation/results.csv`, `summary.json` | replays prefixes of stored ranked confirmations without refitting or retuning |
 | Earlier ten-seed 8-D pure-cEI context | `essay/scripts/run_wpt_8d_mixed_benchmark.py` | `essay/data/wpt_8d_mixed/results.csv`, `summary.json`, `manifest.json` | summary reported in text |
@@ -80,6 +78,7 @@ pdflatex -interaction=nonstopmode -halt-on-error coil_surrogate_icece_5page.tex
 pdflatex -interaction=nonstopmode -halt-on-error coil_surrogate_icece_5page.tex
 ```
 
-Historical 14-D pose/tolerance artifacts and the earlier two-budget hybrid
-experiment remain in the repository for provenance, but are explicitly
-excluded from the revised paper.
+Historical 14-D pose/tolerance artifacts, the earlier two-budget hybrid
+experiment, the 12-verification benchmarks, and the $6+14+4$ allocation study
+remain archived for provenance but are explicitly excluded from the revised
+paper.

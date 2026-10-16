@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """Compare deterministic center-start cEI with the B=27 random-six baseline.
 
-The challenger changes only the construction of the 15-point model-building
-history: one center observation is followed by 14 sequential acquisitions.
+The challenger changes only the construction of the 17-point model-building
+history: one center observation is followed by 16 sequential acquisitions.
 Before the first feasible observation it maximizes probability of feasibility;
 afterward it uses ordinary constrained expected improvement.  The established
-12-point GP confirmation rule and total physical budget remain unchanged.
+10-point GP verification rule and total physical budget remain unchanged.
 """
 from __future__ import annotations
 
@@ -31,7 +31,7 @@ ROWS = OUT / "results.csv"
 SEEDS = tuple(range(20261015, 20261025))
 TARGETS = tuple(range(1, 88))
 EPSILON = 0.025
-N_MODEL, N_CONFIRM = 15, 12
+N_MODEL, N_CONFIRM = 17, 10
 
 wire_diameter = 0.68
 pitch = 1.05 * wire_diameter
@@ -272,12 +272,12 @@ def main():
         "status": "running", "center_index": CENTER_ID,
         "center_point": POINTS[CENTER_ID], "seeds": list(SEEDS),
         "targets_mH": list(TARGETS), "relative_tolerance": EPSILON,
-        "budget": {"initial": 1, "sequential": 14, "confirmation": 12,
+        "budget": {"initial": 1, "sequential": 16, "confirmation": 10,
                    "total": 27},
         "pre_feasible_acquisition": "probability of feasibility",
         "post_feasible_acquisition": "ordinary constrained expected improvement",
         "kernel_policy": "fixed prior for 1--3 observations; baseline optimizer from 4",
-        "confirmation": "same GP-only p_feasible*exp(-unit(mu_R)) top-12 rule",
+        "confirmation": "same GP-only p_feasible*exp(-unit(mu_R)) top-10 rule",
     }
     (OUT/"manifest.json").write_text(json.dumps(manifest, indent=2)+"\n")
     existing = read_rows(ROWS)

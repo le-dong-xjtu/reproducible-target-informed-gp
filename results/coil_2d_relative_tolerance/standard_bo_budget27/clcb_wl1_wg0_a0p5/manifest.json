@@ -106,5 +106,5 @@
   "local_weight": 1.0,
   "global_weight": 0.0,
   "global_response_alpha": 0.5,
-  "budget_composition": "6 initial + 9 acquisitions + 12 validations"
+  "budget_composition": "6 initial + 11 acquisitions + 10 final verifications"
 }

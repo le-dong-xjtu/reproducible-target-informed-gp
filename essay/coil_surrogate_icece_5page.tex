@@ -8,7 +8,7 @@
 \setlength{\textfloatsep}{6pt plus 1pt minus 2pt}
 \setlength{\floatsep}{6pt plus 1pt minus 2pt}
 
-\title{Reproducible Target-Informed Gaussian-Process Optimization for Data-Efficient Electromagnetic Design}
+\title{Deterministic Target-Conditioned Gaussian-Process Optimization for Small-Budget Electromagnetic Design}
 \author{\IEEEauthorblockN{Le Dong}
 \IEEEauthorblockA{\textit{School of Electrical Engineering}\\
 \textit{Xi'an Jiaotong University}\\
@@ -19,21 +19,21 @@ Xi'an, Shaanxi 710049, China\\
 \maketitle
 
 \begin{abstract}
-Electromagnetic component design often requires a target response within a strict tolerance band while minimizing a secondary objective under a limited computational budget. This work establishes a deterministic, target-informed Gaussian-process (GP) optimization workflow that combines center-point initialization, uncertainty-weighted feasibility search, fixed low-discrepancy starts for GP hyperparameter fitting, a dimension-dependent minimum sample threshold, a relative constrained-expected-improvement (cEI) stopping criterion, and a final verification batch. After its settings are fixed on 14 development targets, the workflow identifies the global optimum at all 73 held-out targets of a 1,110-design coil benchmark, requiring 21.81 model evaluations per target on average. Six-point random initialization with the same fitting and stopping criteria recovers 856/870 seed--target optima, whereas the center-initialized trajectories are deterministic. On a 21-target, eight-dimensional wireless-power-transfer (WPT) benchmark, both the proposed workflow and budget-matched conventional cEI find feasible designs for all 21 targets, compared with 10/21 for Sobol search. Adaptive stopping reduces evaluations by 30.3\% with a 3.79\% increase in mean DC resistance. In a 3-D Ansys Maxwell comparison at 1000 nH, both methods satisfy the constraint using 30 evaluations; the proposed workflow obtains $0.38368~\Omega$ AC resistance, compared with $0.38954~\Omega$ for the baseline.
+Electromagnetic component design often requires a target response within a strict tolerance band while minimizing a performance objective under a limited computational budget. To eliminate run-to-run variance under small evaluation budgets, we present a deterministic, target-conditioned Gaussian-process (GP) workflow that pairs center-point initialization and deterministic multi-start GP fitting with a two-stage feasibility-to-constrained-expected-improvement (cEI) search, adaptive relative-cEI stopping, and a final verification batch. With hyperparameters and stopping rules fixed on 14 development targets, the workflow recovers the exact global optimum on all 73 held-out targets of a 1,110-design air-core coil benchmark at an average cost of 21.81 evaluations per target. By contrast, six-point random initialization under the same fitting and stopping rules suffers from seed sensitivity, recovering 856 of 870 target–seed runs. When transferred without retuning to an eight-dimensional wireless-power-transfer (WPT) benchmark across 21 target mutual inductances, both the proposed workflow and budget-matched conventional cEI find feasible designs for all 21 targets, compared with 10/21 for quasirandom Sobol search. Relative to a fixed 50-evaluation budget, the adaptive stopping rule cuts evaluations by 30.3\% at the cost of a 3.79\% increase in mean DC resistance. Finally, in an 85-kHz 3-D Ansys Maxwell eddy-current verification at 1000 nH, the proposed workflow automatically terminates at 30 total evaluations with an AC resistance of $0.38368~\Omega$, outperforming a conventional cEI baseline matched to the same 30-evaluation budget ($0.38954~\Omega$).
 \end{abstract}
 
 \begin{IEEEkeywords}
-Bayesian optimization, constrained expected improvement, electromagnetic design, Gaussian process, wireless power transfer.
+Adaptive stopping, Bayesian optimization, constrained expected improvement, electromagnetic design, surrogate modeling.
 \end{IEEEkeywords}
 
 \section{Introduction}
-Electromagnetic design frequently asks for a configuration whose required response lies in a narrow band while another response is optimized. If a forward model returns constrained response $g(x)$ and scalar objective $J(x)$, the task is
+Electromagnetic design frequently requires matching a target physical response within a strict tolerance band $\epsilon$ while minimizing a competing objective. For a forward model returning a constrained response $g(x)$ and scalar objective $J(x)$ ver design space $\mathcal X$, the target-conditioned optimization problem is
 \begin{equation}
  \min_{x\in\mathcal X}J(x)\quad\mathrm{s.t.}\quad
- |g(x)-g_t|/|g_t|\leq\epsilon .
+ \frac{|g(x)-g_t|}{|g_t|}\leq\epsilon .
  \label{eq:problem}
 \end{equation}
-The objective can be resistance or a scalarized combination of loss, mass, temperature, material use, and efficiency. A low evaluation count is valuable when each observation requires simulation or measurement, but it also makes initialization, stochastic GP fitting, and stopping materially affect the returned design.
+Here, $J(x)$ may represent winding resistance or a scalarized combination of loss, mass, thermal rise. Since each forward evaluation often requires an expensive finite-element simulation or hardware measurement, the total evaluation budget must remain small, while initial sampling, stochastic surrogate fitting, and stopping rules heavily influence the final design.
 
 Gaussian-process Bayesian optimization (BO) is established in electromagnetic design. Online GP-assisted evolutionary search has been applied to antennas \cite{liu2014}, machine-learning-assisted antenna optimization has combined learned representations and GPs \cite{wu2024}, and BO has been used for WPT coil design \cite{sim2023}. Constrained expected improvement (cEI) is likewise established \cite{gardner}. Existing studies commonly report performance under fixed budgets, but initialization, GP-fit reproducibility, adaptive stopping, and final verification are rarely evaluated together under an explicit function-evaluation budget. We study how these choices affect a target-conditioned optimizer when only a small number of model evaluations is available.
 
@@ -52,19 +52,19 @@ The first benchmark describes a multilayer air-core coil by radial layers $T\in\
 The domain contains 1,110 integer designs. A design is feasible when $|L-L_t|/L_t\leq0.025$, and the objective is the smallest feasible $R$. Enumeration supplies an independent reference optimum for each target $L_t=1,\ldots,87$ mH. For a feasible returned design, bounded loss is $u=r/(1+r)$, where $r=R/R_{\rm exhaustive}-1$; infeasible returns have $u=1$.
 
 \subsection{Reusable-Surrogate Screening}
-Before target-specific optimization, we compare reusable dual-response GPs and ten-member neural ensembles under the same $B=15+12=27$ protocol: 15 globally reusable model-building observations and 12 target-specific validations. The random policies use 15 seeded uniform observations. Active policies begin with six of the same observations and acquire nine more using equally weighted, scale-normalized uncertainty in $L$ and $R$. Every model family then uses the same validation score and decision pool.
+Before target-specific optimization, we compare reusable dual-response GPs and ten-member neural ensembles under the same $B=17+10=27$ protocol: 17 globally reusable model-building observations and ten target-specific final evaluations. The random policies use 17 seeded uniform observations. Active policies begin with six of the same observations and acquire 11 more using equally weighted, scale-normalized uncertainty in $L$ and $R$. Every model family then uses the same final-ranking score and decision pool.
 
-Fig.~\ref{fig:surrogates} shows that active selection improves both families, with the GP giving the stronger result under this budget. Random GP sampling finds feasible designs in 99.66\% of 870 cases and reaches 658 exact optima; active GP sampling finds feasible designs in every case, reaches 759 exact optima, and reduces all-case mean bounded loss from 0.0111 to 0.00218, an 80.3\% reduction. For the tested 16--8 ReLU ensemble, active sampling raises exact recovery from 351 to 586 but leaves mean loss at 0.188. The target-conditioned experiments therefore use GP surrogates.
+Fig.~\ref{fig:surrogates} shows that active selection improves both families, with the GP giving the stronger result under this budget. Random GP sampling finds feasible designs in 99.89\% of 870 cases and reaches 695 exact optima; active GP sampling finds feasible designs in every case, reaches 740 exact optima, and reduces all-case mean bounded loss from 0.00682 to 0.00287, a 57.9\% reduction. For the tested 16--8 ReLU ensemble, active sampling raises exact recovery from 274 to 651 and reduces mean loss from 0.310 to 0.104. The target-conditioned experiments therefore use GP surrogates.
 
 \begin{figure}[!t]
  \centering
  \includegraphics[width=0.90\columnwidth]{fig01_global_surrogate_2x2.png}
- \caption{Matched reusable-surrogate screen at nominal per-target $B=27$. Both model families use 15 shared model-building observations and the same 12 target-specific validations. Lower bounded loss is better.}
+ \caption{Matched reusable-surrogate screen at nominal per-target $B=27$. Both model families use 17 shared model-building observations and the same ten target-specific final evaluations. Lower bounded loss is better.}
  \label{fig:surrogates}
 \end{figure}
 
 \subsection{Direct-Search Reference}
-We also compare the selected reusable GP with simulated annealing (SA), which searches the integer domain directly using cached evaluations and stops after five cycles without a 1\% feasible-objective improvement \cite{kirkpatrick}. Both methods use the same $\pm2.5\%$ feasibility rule and the same ten seeds. Fig.~\ref{fig:gp-sa} shows trimmed mean bounded loss of 0.00139 for the GP and 0.0451 for SA, at 27 nominal evaluations versus 92.1. Moreover, the GP's 15 model-building observations are reused across all targets, whereas SA starts a separate search for every target. This result motivates the subsequent target-informed GP study.
+We also compare the selected reusable GP with simulated annealing (SA), which searches the integer domain directly using cached evaluations and stops after five cycles without a 1\% feasible-objective improvement \cite{kirkpatrick}. Both methods use the same $\pm2.5\%$ feasibility rule and the same ten seeds. Fig.~\ref{fig:gp-sa} shows trimmed mean bounded loss of 0.00205 for the GP and 0.0451 for SA, at 27 nominal evaluations versus 92.1. Moreover, the GP's 17 model-building observations are reused across all targets, whereas SA starts a separate search for every target. This result motivates the subsequent target-informed GP study.
 
 \begin{figure}[!t]
  \centering
@@ -80,7 +80,7 @@ Independent GPs model $L$ and $R$ with radial-basis-function kernels and white-n
  -\Phi\!\left(\frac{L_t(1-\epsilon)-\mu_L}{\sigma_L}\right).
  \label{eq:pf}
 \end{equation}
-After a feasible observation exists, cEI maximizes $a_{\rm cEI}(x)=p_F(x)\mathrm{EI}_R(x)$. A matched $6+9+12=27$ comparison over ten seeds and 87 targets obtains 860/870 exhaustive optima with cEI, versus 789 for constrained lower confidence bound and 836 for integrated variance reduction. Reallocating verification evaluations to sequential learning reaches 870/870 at $6+14+4=24$. These results motivate cEI and explicit budget allocation; full model-family and acquisition ablations are retained in the reproducibility package.
+After a feasible observation exists, cEI maximizes $a_{\rm cEI}(x)=p_F(x)\mathrm{EI}_R(x)$. A matched $6+11+10=27$ comparison over ten seeds and 87 targets obtains 867/870 exhaustive optima with cEI, versus 829 for constrained lower confidence bound and 827 for integrated variance reduction. IVR nevertheless has much lower mean bounded loss than cLCB (0.000819 versus 0.00274), so their secondary ordering depends on the performance metric. cEI is strongest under both exact recovery and mean loss.
 
 \subsection{Deterministic Feasibility Discovery and Fitting}
 Before a feasible incumbent exists, maximizing $p_F$ alone can make a one-observation GP locally confident in the wrong region. We first observe the normalized domain center and then maximize
@@ -102,7 +102,7 @@ The adaptive phase can stop only after at least $N_{\min}=2d+1$ model-building o
 Each target follows five steps: (1) evaluate the domain center; (2) use (\ref{eq:start}) until a feasible observation is obtained; (3) refit both GPs from the fixed $K=5$ hyperparameter starts and acquire by cEI; (4) apply the minimum sample threshold and require three consecutive stopping-threshold hits; and (5) evaluate the final verification batch and return the best observed feasible design. Computational cost is measured by forward-model evaluations, with initialization, adaptive sampling, and verification reported separately.
 
 \section{Experimental Protocol}
-The 2-D targets are the 87 integers from 1 to 87 mH. Stochastic comparisons use ten fixed seeds, producing 870 target--seed cases. Every baseline receives the same model-evaluation budget and decision pool within its comparison. The initial acquisition study uses six initial observations, nine sequential observations, and 12 final validations. The allocation study fixes six initial observations and moves evaluations between sequential learning and verification. All losses and exact-recovery counts are recomputed against enumeration.
+The 2-D targets are the 87 integers from 1 to 87 mH. Stochastic comparisons use ten fixed seeds, producing 870 target--seed cases. Every baseline receives the same model-evaluation budget and decision pool within its comparison. The acquisition study uses six initial observations, 11 sequential observations, and ten final evaluations. All losses and exact-recovery counts are recomputed against enumeration.
 
 The feasibility weight is screened at ten targets spanning the domain. A separate 2--5 mH diagnostic examines the misses observed for random-six cEI. Stopping is developed on the union of these sets, giving 14 distinct targets. After fixing the 75/25 score, $K=5$, $\delta=1\%$, patience three, and ten verification evaluations, the remaining 73 targets are held out as a single final test. Replaying seed labels for the deterministic workflow verifies that the implementation is invariant to the unused seed input.
 
@@ -117,7 +117,7 @@ To separate deterministic fitting from starting-policy sensitivity, random-six i
 
 At stopping, feasible-region posterior coverage on the 73 held-out tasks is 80.8\%/96.5\% at $1\sigma/2\sigma$ for $L$ and 82.1\%/96.3\% for $R$, whereas global coverage is substantially poorer. The pre-verification incumbent is already optimal in all 73 cases, so the final batch acts as a conservative verification allocation in this experiment.
 
-Table~\ref{tab:two-d} separates the relevant comparisons. At $B=27$, cEI is the strongest tested target-conditioned acquisition. Budget reallocation shows that additional sequential learning improves exact recovery. The final comparison gives random and deterministic starts identical fitting and stopping criteria; the deterministic policy removes the remaining seed dependence.
+Table~\ref{tab:two-d} separates the relevant comparisons. At $B=27$, cEI is the strongest tested target-conditioned acquisition under the uniform ten-evaluation final batch. The final comparison gives random and deterministic starts identical fitting and stopping criteria; the deterministic policy removes the remaining seed dependence.
 
 \begin{table}[!t]
 \caption{Summary of the 2-D evidence. Development and held-out rows have different denominators and are not pooled.}
@@ -128,8 +128,7 @@ Table~\ref{tab:two-d} separates the relevant comparisons. At $B=27$, cEI is the 
 \toprule
 Configuration & Cases & Exact & Mean evaluations \\
 \midrule
-cEI, fixed $6+9+12$ & 870 & 860 & 27.00 \\
-cEI, reallocated $6+14+4$ & 870 & 870 & 24.00 \\
+cEI, fixed $6+11+10$ & 870 & 867 & 27.00 \\
 Automatic, development & 14 & 14 & 22.571 \\
 Automatic, held out & 73 & 73 & 21.808 \\
 Random-six + same stopping & 870 & 856 & 22.570 \\

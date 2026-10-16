@@ -104,5 +104,5 @@
   ],
   "acquisition": "(1-alpha)*sigma_L/s_L + alpha*sigma_R/s_R",
   "scales": "fixed after the six initial observations",
-  "budget_composition": "15 reusable model-building evaluations + 12 validations per target"
+  "budget_composition": "17 reusable model-building evaluations + 10 final verifications per target"
 }

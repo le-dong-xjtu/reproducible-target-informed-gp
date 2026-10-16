@@ -184,13 +184,12 @@ def audit_center_start_evidence():
     baseline = {(int(row["seed"]), int(float(row["target_mH"]))): row
                 for row in rows(ROOT/"results/coil_2d_relative_tolerance/cei_budget27/cei_results.csv")}
     folders = {
-        "full": ESSAY/"data/center_start_cei_lr/results.csv",
         "screen": ESSAY/"data/center_feasibility_smoke/results.csv",
         "low": ESSAY/"data/center_feasibility_low_targets/results.csv",
     }
     data = {name: rows(path) for name, path in folders.items()}
     assert {name: len(group) for name, group in data.items()} == {
-        "full": 870, "screen": 300, "low": 40}
+        "screen": 300, "low": 40}
     for group in data.values():
         for row in group:
             assert int(row["budget"]) == (int(row["n_initial"])
@@ -203,17 +202,15 @@ def audit_center_start_evidence():
                 regret = float(row["decision_R_ohm"])/min(feasible_r)-1
                 expected = regret/(1+regret)
             assert_close(row["bounded_loss_u"], expected)
-    assert sum(truth(row["qualified"]) for row in data["full"]) == 460
-    assert sum(truth(row["exact"]) for row in data["full"]) == 460
     screen = defaultdict(list)
     for row in data["screen"]:
         screen[float(row["pre_uncertainty_weight"])].append(row)
     assert set(screen) == {.25, .5, .75}
-    assert [sum(truth(row["exact"]) for row in screen[w]) for w in (.25, .5, .75)] == [100, 100, 98]
+    assert [sum(truth(row["exact"]) for row in screen[w]) for w in (.25, .5, .75)] == [100, 100, 99]
     assert all(truth(row["qualified"]) for row in data["low"])
     assert all(truth(row["exact"]) for row in data["low"])
     low_keys = [(int(row["seed"]), int(row["target_mH"])) for row in data["low"]]
-    assert sum(float(baseline[key]["bounded_loss_u"]) <= 1e-12 for key in low_keys) == 30
+    assert sum(float(baseline[key]["bounded_loss_u"]) <= 1e-12 for key in low_keys) == 37
     return sum(map(len, data.values()))
 
 
@@ -483,8 +480,8 @@ def audit_clcb_replay():
     assert report["implementation"]["source_sha256"] == hashlib.sha256(
         source.read_bytes()).hexdigest()
     summary = report["fresh_replay_summary"]
-    assert summary["exact_optimum_cases"] == 789
-    assert_close(summary["all_case_mean_u"], .00581592670840565)
+    assert summary["exact_optimum_cases"] == 829
+    assert_close(summary["all_case_mean_u"], .0027380531429969063)
     return len(data)
 
 
@@ -534,7 +531,6 @@ def audit_assets():
         ESSAY/"scripts/verify_clcb_replay.py",
         ESSAY/"scripts/render_automated_stopping.py",
         ESSAY/"scripts/render_wpt_selected_geometry.py",
-        ESSAY/"data/center_start_cei_lr/results.csv",
         ESSAY/"data/center_feasibility_smoke/results.csv",
         ESSAY/"data/center_feasibility_low_targets/results.csv",
         ESSAY/"scripts/render_wpt_budget_sweep.py",
