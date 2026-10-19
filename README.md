@@ -4,7 +4,7 @@ Companion code, data, validation scripts, and LaTeX source for the five-page con
 
 > **Le Dong**, *"Deterministic Target-Conditioned Gaussian-Process Optimization for Small-Budget Electromagnetic Design,"* School of Electrical Engineering, Xi'an Jiaotong University.
 >
-> **Manuscript:** [`essay/coil_surrogate_icece_5page.pdf`](essay/coil_surrogate_icece_5page.pdf) ([LaTeX source](essay/coil_surrogate_icece_5page.tex))  
+> **Manuscript:** [`essay/Deterministic Target-Conditioned Gaussian-Process Optimization for Small-Budget Electromagnetic Design.pdf`](essay/Deterministic%20Target-Conditioned%20Gaussian-Process%20Optimization%20for%20Small-Budget%20Electromagnetic%20Design.pdf) ([LaTeX source](essay/Deterministic%20Target-Conditioned%20Gaussian-Process%20Optimization%20for%20Small-Budget%20Electromagnetic%20Design.tex))  
 > **Repository:** https://github.com/le-dong-xjtu/reproducible-target-informed-gp
 
 ---
@@ -21,7 +21,7 @@ Electromagnetic component design frequently requires matching a target physical 
 
 ## 2. Paper-to-Repository Index (Figures, Tables & Sections)
 
-Every figure, table, and numerical claim in [`essay/coil_surrogate_icece_5page.pdf`](essay/coil_surrogate_icece_5page.pdf) maps directly to the scripts, figure files, and datasets indexed below:
+Every figure, table, and numerical claim in [`essay/Deterministic Target-Conditioned Gaussian-Process Optimization for Small-Budget Electromagnetic Design.pdf`](essay/Deterministic%20Target-Conditioned%20Gaussian-Process%20Optimization%20for%20Small-Budget%20Electromagnetic%20Design.pdf) maps directly to the scripts, figure files, and datasets indexed below:
 
 | Paper Component | Section | Active Data & Figure Path | Generation / Runner Script | Verification / Audit Script |
 | :--- | :--- | :--- | :--- | :--- |
@@ -58,8 +58,8 @@ Every figure, table, and numerical claim in [`essay/coil_surrogate_icece_5page.p
 ├── results/
 │   └── coil_2d_relative_tolerance/               # Retained 2-D benchmark CSVs and summaries
 └── essay/
-    ├── coil_surrogate_icece_5page.tex            # 5-page IEEEtran conference LaTeX source
-    ├── coil_surrogate_icece_5page.pdf            # Compiled 5-page conference paper
+    ├── Deterministic Target-Conditioned Gaussian-Process Optimization for Small-Budget Electromagnetic Design.tex  # 5-page IEEEtran conference LaTeX source
+    ├── Deterministic Target-Conditioned Gaussian-Process Optimization for Small-Budget Electromagnetic Design.pdf  # Compiled 5-page conference paper
     ├── data/                                     # Row-level optimization traces and AEDT archives
     ├── figures/
     │   ├── fig01_surrogate_comparison.pdf        # Fig. 1 vector PDF
@@ -106,8 +106,8 @@ python3 essay/scripts/render_conference_figures.py
 
 ```sh
 cd essay
-pdflatex -interaction=nonstopmode -halt-on-error coil_surrogate_icece_5page.tex
-pdflatex -interaction=nonstopmode -halt-on-error coil_surrogate_icece_5page.tex
+pdflatex -interaction=nonstopmode -halt-on-error "Deterministic Target-Conditioned Gaussian-Process Optimization for Small-Budget Electromagnetic Design.tex"
+pdflatex -interaction=nonstopmode -halt-on-error "Deterministic Target-Conditioned Gaussian-Process Optimization for Small-Budget Electromagnetic Design.tex"
 ```
 
 ---
