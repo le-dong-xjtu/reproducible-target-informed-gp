@@ -1,0 +1,19 @@
+{
+  "initial_samples": 6,
+  "maximum_true_evaluations": 17,
+  "final_validation_count": 10,
+  "seed": 20261015,
+  "relative_tolerance": 0.025,
+  "target_mH": 20.0,
+  "local_weight": 1.0,
+  "global_weight": 0.0,
+  "global_response_alpha": 0.5,
+  "initial_local_weight": 0.25,
+  "final_local_weight": 0.9,
+  "initial_entropy_weight": 0.35,
+  "initial_diversity_weight": 0.15,
+  "lcb_kappa": 2.0,
+  "ivr_roi_size": 128,
+  "ivr_global_fraction": 0.25,
+  "ivr_resistance_weight": 0.5
+}

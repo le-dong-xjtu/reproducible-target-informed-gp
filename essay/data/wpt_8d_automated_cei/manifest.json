@@ -1,0 +1,40 @@
+{
+  "task": "minimize resistance at M=1500 nH within 2.5 percent",
+  "dimensions": 8,
+  "pose": "fixed nominal",
+  "center": [
+    7.0,
+    10.0,
+    2.0,
+    55.0,
+    7.0,
+    10.0,
+    2.0,
+    55.0
+  ],
+  "pre_feasibility_weights": {
+    "pF": 0.75,
+    "sigma_M": 0.25
+  },
+  "acquisition_after_feasibility": "ordinary cEI",
+  "stop": {
+    "maximum_relative_cEI": 0.01,
+    "patience": 3,
+    "minimum_model_building": 17
+  },
+  "budget": {
+    "maximum_model_building": 40,
+    "confirmation": 10,
+    "maximum_total": 50
+  },
+  "gp": {
+    "kernel": "isotropic Matern-5/2",
+    "deterministic_starts": 5,
+    "fixed_prior_for_observations_below": 4
+  },
+  "candidates": {
+    "sequence": "unscrambled Sobol",
+    "per_step": 2048,
+    "confirmation_pool": 4096
+  }
+}

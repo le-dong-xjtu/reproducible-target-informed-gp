@@ -1,0 +1,16 @@
+{
+  "wire": {
+    "diameter_mm": 0.68,
+    "winding_factor": 1.05,
+    "resistivity_ohm_mm": 1.851e-5
+  },
+  "geometry": {
+    "inner_diameter_mm": 80.0,
+    "layers": {"min": 1, "max": 10},
+    "turns_per_layer": {"min": 20, "max": 130}
+  },
+  "inductance_target": {
+    "mH": 20.0,
+    "tolerance_mH": 0.5
+  }
+}

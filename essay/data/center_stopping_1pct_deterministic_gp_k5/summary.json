@@ -1,0 +1,66 @@
+{
+  "targets_mH": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    11,
+    20,
+    30,
+    39,
+    49,
+    58,
+    68,
+    77,
+    87
+  ],
+  "seeds": [
+    20261015,
+    20261016,
+    20261017,
+    20261018,
+    20261019,
+    20261020,
+    20261021,
+    20261022,
+    20261023,
+    20261024
+  ],
+  "center": [
+    5,
+    75
+  ],
+  "pre_feasibility_score": ".75*unit(pF)+.25*unit(sigma_L)",
+  "delta_stop_relative_improvement": 0.01,
+  "stop_patience": 3,
+  "minimum_model_building": 5,
+  "budget": {
+    "maximum_model_building": 17,
+    "confirmation": 10,
+    "maximum_total": 27
+  },
+  "cosine_progress": "log contraction of max ordinary-cEI / incumbent",
+  "cosine_xi_reference": "median sigma_R where pF >= half its current maximum at first feasibility",
+  "confirmation": "simultaneous top-10 by pF*exp(-unit(mu_R)), fitted to the stopped history",
+  "gp_optimizer": "deterministic Halton multistart, K=5",
+  "results": [
+    {
+      "policy": "ordinary_stop",
+      "cases": 140,
+      "qualification_rate": 1.0,
+      "exact_optimum_cases": 140,
+      "exact_optimum_rate": 1.0,
+      "mean_bounded_loss_u": 0.0,
+      "mean_oracle_calls": 22.571428571428573,
+      "median_oracle_calls": 23.0,
+      "maximum_oracle_calls": 26,
+      "natural_stop_cases": 140,
+      "wins_ties_losses_vs_random_six_B27": [
+        10,
+        130,
+        0
+      ]
+    }
+  ]
+}

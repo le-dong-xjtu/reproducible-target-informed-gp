@@ -1,0 +1,24 @@
+{
+  "status": "complete",
+  "implementation": {
+    "lower_bound": "mean_R - kappa*std_R",
+    "kappa": 2.0,
+    "maximized_acquisition": "p_feasible*exp(-unit_scale(lower_bound))",
+    "source": "methods/target_informed_gp/gp_conventional_acquisition_baselines.py",
+    "source_sha256": "ab21d2fd7aa4756a872d2467cf40c5fc5a89bbc60b8027550035c513a0230e47"
+  },
+  "fresh_replay_summary": {
+    "cases": 870,
+    "qualification_rate": 1.0,
+    "exact_optimum_cases": 829,
+    "exact_optimum_rate": 0.9528735632183908,
+    "all_case_mean_u": 0.0027380531429969063,
+    "targetwise_trimmed_mean_u": 0.0010821209079032328,
+    "worst_seed_mean_u": 0.008464885285595993,
+    "worst_seed": 20261023
+  },
+  "reference_rows": 870,
+  "fresh_rows": 870,
+  "mismatch_count": 0,
+  "mismatches": []
+}

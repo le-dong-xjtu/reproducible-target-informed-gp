@@ -1,0 +1,79 @@
+{
+  "random6": {
+    "cases": 870,
+    "qualified_cases": 870,
+    "exact_cases": 859,
+    "mean_bounded_loss_u": 0.000603198530120122,
+    "mean_calls": 22.604597701149427,
+    "median_calls": 22.0,
+    "call_range": [
+      18,
+      31
+    ],
+    "targets_with_seed_variable_decision": 8,
+    "targets_with_seed_variable_loss": 8,
+    "variable_decision_targets_mH": [
+      1,
+      2,
+      3,
+      4,
+      9,
+      11,
+      13,
+      22
+    ],
+    "variable_loss_targets_mH": [
+      1,
+      2,
+      3,
+      4,
+      9,
+      11,
+      13,
+      22
+    ],
+    "nonexact_targets_mH": [
+      1,
+      2,
+      3,
+      4,
+      9,
+      11,
+      13,
+      22
+    ],
+    "loss_quantiles_95_99_max": [
+      0.0,
+      0.023228592332294573,
+      0.15525233080086523
+    ]
+  },
+  "deterministic_center": {
+    "unique_target_trajectories": 87,
+    "qualified_targets": 87,
+    "exact_targets": 87,
+    "mean_bounded_loss_u": 0.0,
+    "mean_calls": 21.93103448275862,
+    "median_calls": 22.0,
+    "call_range": [
+      19,
+      26
+    ],
+    "implementation_seed_variance": 0.0
+  },
+  "paired_random_cases_vs_target_matched_deterministic": {
+    "deterministic_wins": 11,
+    "ties": 859,
+    "deterministic_losses": 0,
+    "random_minus_deterministic_mean_calls": 0.6735632183908046,
+    "target_cluster_bootstrap_95pct_ci_mean_loss_difference": [
+      0.00013171855346737148,
+      0.001247237185708178
+    ],
+    "target_cluster_bootstrap_95pct_ci_call_difference": [
+      0.4471264367816092,
+      0.8931034482758621
+    ]
+  },
+  "interpretation": "Operational comparison under common acquisition, GP fitting, stopping, confirmation, without an evaluation cap. Different initial-set sizes also change active-call allocation; therefore this does not isolate determinism alone."
+}

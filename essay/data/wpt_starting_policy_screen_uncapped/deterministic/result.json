@@ -1,0 +1,15 @@
+{
+  "policy": "deterministic",
+  "seed": null,
+  "target_M_nH": 1500.0,
+  "qualified": true,
+  "best_R_ohm": 0.3057735584037057,
+  "best_M_nH": 1466.4804037020845,
+  "best_evaluation": 30,
+  "first_feasible_evaluation": 12,
+  "n_initial": 1,
+  "n_model_building": 34,
+  "n_confirmation": 10,
+  "total_evaluations": 44,
+  "stopped_naturally": true
+}

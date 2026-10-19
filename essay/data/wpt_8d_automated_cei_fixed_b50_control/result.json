@@ -1,0 +1,26 @@
+{
+  "qualified": true,
+  "exact_reproducible": true,
+  "best_M_nH": 1466.4804037020845,
+  "best_R_ohm": 0.3057735584037057,
+  "relative_target_error_pct": 2.2346397531943696,
+  "design": [
+    9.0,
+    7.0,
+    1.741119384765625,
+    61.723785400390625,
+    7.0,
+    7.0,
+    2.708953857421875,
+    61.006622314453125
+  ],
+  "decision_stage": "model_building",
+  "first_feasible_evaluation": 12,
+  "n_model_building": 40,
+  "n_confirmation": 10,
+  "total_evaluations": 50,
+  "stopped_naturally": false,
+  "final_below_threshold_streak": 8,
+  "final_rho": 0.006142656454751197,
+  "runtime_sec": 4.6702875829999995
+}

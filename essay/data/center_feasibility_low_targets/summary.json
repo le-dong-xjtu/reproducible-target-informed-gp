@@ -1,0 +1,65 @@
+{
+  "targets_mH": [
+    2,
+    3,
+    4,
+    5
+  ],
+  "seeds": [
+    20261015,
+    20261016,
+    20261017,
+    20261018,
+    20261019,
+    20261020,
+    20261021,
+    20261022,
+    20261023,
+    20261024
+  ],
+  "pre_uncertainty_weight": 0.25,
+  "budget": {
+    "initial": 1,
+    "sequential": 16,
+    "confirmation": 10,
+    "total": 27
+  },
+  "qualification": "40/40",
+  "exact_optima": "40/40",
+  "baseline_exact_optima": "37/40",
+  "mean_u": 0.0,
+  "baseline_mean_u": 0.0035114551972336176,
+  "paired_wins_ties_losses": [
+    3,
+    37,
+    0
+  ],
+  "median_first_feasible_evaluation": 8.0,
+  "maximum_first_feasible_evaluation": 9,
+  "by_target": {
+    "2": {
+      "challenger_exact": 10,
+      "baseline_exact": 8,
+      "challenger_mean_u": 0.0,
+      "baseline_mean_u": 0.008973984803134143
+    },
+    "3": {
+      "challenger_exact": 10,
+      "baseline_exact": 9,
+      "challenger_mean_u": 0.0,
+      "baseline_mean_u": 0.005071835985800327
+    },
+    "4": {
+      "challenger_exact": 10,
+      "baseline_exact": 10,
+      "challenger_mean_u": 0.0,
+      "baseline_mean_u": 0.0
+    },
+    "5": {
+      "challenger_exact": 10,
+      "baseline_exact": 10,
+      "challenger_mean_u": 0.0,
+      "baseline_mean_u": 0.0
+    }
+  }
+}

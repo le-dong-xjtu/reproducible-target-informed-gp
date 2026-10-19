@@ -1,0 +1,26 @@
+{
+  "all": {
+    "cases": 87,
+    "exact": 87,
+    "mean_calls": 21.93103448275862,
+    "min_calls": 19,
+    "max_calls": 26,
+    "mean_loss": 0.0
+  },
+  "development": {
+    "cases": 14,
+    "exact": 14,
+    "mean_calls": 22.571428571428573,
+    "min_calls": 19,
+    "max_calls": 26,
+    "mean_loss": 0.0
+  },
+  "heldout": {
+    "cases": 73,
+    "exact": 73,
+    "mean_calls": 21.80821917808219,
+    "min_calls": 19,
+    "max_calls": 25,
+    "mean_loss": 0.0
+  }
+}

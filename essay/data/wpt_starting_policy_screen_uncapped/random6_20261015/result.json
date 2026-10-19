@@ -1,0 +1,15 @@
+{
+  "policy": "random6_20261015",
+  "seed": 20261015,
+  "target_M_nH": 1500.0,
+  "qualified": true,
+  "best_R_ohm": 0.30945116227628455,
+  "best_M_nH": 1487.0817255962288,
+  "best_evaluation": 45,
+  "first_feasible_evaluation": 8,
+  "n_initial": 6,
+  "n_model_building": 35,
+  "n_confirmation": 10,
+  "total_evaluations": 45,
+  "stopped_naturally": true
+}

@@ -1,0 +1,62 @@
+[
+  {
+    "observations": 6,
+    "rho": null,
+    "streak": 0
+  },
+  {
+    "observations": 7,
+    "rho": null,
+    "streak": 0
+  },
+  {
+    "observations": 8,
+    "rho": null,
+    "streak": 0
+  },
+  {
+    "observations": 9,
+    "rho": null,
+    "streak": 0
+  },
+  {
+    "observations": 10,
+    "rho": 0.016566585816545243,
+    "streak": 0
+  },
+  {
+    "observations": 11,
+    "rho": 0.01145381488002249,
+    "streak": 0
+  },
+  {
+    "observations": 12,
+    "rho": 0.012642186323375297,
+    "streak": 0
+  },
+  {
+    "observations": 13,
+    "rho": 0.009018201796295644,
+    "streak": 1
+  },
+  {
+    "observations": 14,
+    "rho": 0.012187735381668462,
+    "streak": 0
+  },
+  {
+    "observations": 15,
+    "rho": 0.008866185455288358,
+    "streak": 1
+  },
+  {
+    "observations": 16,
+    "rho": 0.009834633568248732,
+    "streak": 2
+  },
+  {
+    "observations": 17,
+    "rho": 0.009456897893513191,
+    "streak": 3
+  }
+]

@@ -1,0 +1,62 @@
+[
+  {
+    "policy": "automated",
+    "cases": 21,
+    "qualified_cases": 21,
+    "mean_R_qualified_ohm": 0.31486895518731395,
+    "mean_target_error_pct": 1.1148149555592426,
+    "mean_total_evaluations": 35.04761904761905,
+    "mean_oracle_runtime_sec": 0.02960453404760713,
+    "mean_surrogate_runtime_sec": 1.600791896857128
+  },
+  {
+    "policy": "center_pf_cei_matched",
+    "cases": 21,
+    "qualified_cases": 21,
+    "mean_R_qualified_ohm": 0.3178338277307731,
+    "mean_target_error_pct": 1.22488989273569,
+    "mean_total_evaluations": 35.04761904761905,
+    "mean_oracle_runtime_sec": 0.03572926538095939,
+    "mean_surrogate_runtime_sec": 1.3945822099047587
+  },
+  {
+    "policy": "conventional_cei_matched",
+    "cases": 21,
+    "qualified_cases": 21,
+    "mean_R_qualified_ohm": 0.31549202957059885,
+    "mean_target_error_pct": 1.5927665900962662,
+    "mean_total_evaluations": 35.04761904761905,
+    "mean_oracle_runtime_sec": 0.03105513328573092,
+    "mean_surrogate_runtime_sec": 1.2331296346666663
+  },
+  {
+    "policy": "sobol_matched",
+    "cases": 21,
+    "qualified_cases": 10,
+    "mean_R_qualified_ohm": 0.38511319742394257,
+    "mean_target_error_pct": 3.2842411293993865,
+    "mean_total_evaluations": 35.04761904761905,
+    "mean_oracle_runtime_sec": 0.03500384095237551,
+    "mean_surrogate_runtime_sec": 0.0
+  },
+  {
+    "policy": "forced_b50",
+    "cases": 21,
+    "qualified_cases": 21,
+    "mean_R_qualified_ohm": 0.30349575686820096,
+    "mean_target_error_pct": 1.441792684544599,
+    "mean_total_evaluations": 50.0,
+    "mean_oracle_runtime_sec": 0.04114551557142166,
+    "mean_surrogate_runtime_sec": 2.655045679952394
+  },
+  {
+    "policy": "conventional_cei_b50",
+    "cases": 21,
+    "qualified_cases": 21,
+    "mean_R_qualified_ohm": 0.3023471504837312,
+    "mean_target_error_pct": 1.565588805920689,
+    "mean_total_evaluations": 50.0,
+    "mean_oracle_runtime_sec": 0.0426032813809539,
+    "mean_surrogate_runtime_sec": 2.4245283057142752
+  }
+]

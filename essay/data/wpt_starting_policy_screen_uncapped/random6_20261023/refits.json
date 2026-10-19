@@ -1,0 +1,87 @@
+[
+  {
+    "observations": 6,
+    "rho": null,
+    "streak": 0
+  },
+  {
+    "observations": 7,
+    "rho": null,
+    "streak": 0
+  },
+  {
+    "observations": 8,
+    "rho": null,
+    "streak": 0
+  },
+  {
+    "observations": 9,
+    "rho": null,
+    "streak": 0
+  },
+  {
+    "observations": 10,
+    "rho": null,
+    "streak": 0
+  },
+  {
+    "observations": 11,
+    "rho": null,
+    "streak": 0
+  },
+  {
+    "observations": 12,
+    "rho": null,
+    "streak": 0
+  },
+  {
+    "observations": 13,
+    "rho": null,
+    "streak": 0
+  },
+  {
+    "observations": 14,
+    "rho": null,
+    "streak": 0
+  },
+  {
+    "observations": 15,
+    "rho": null,
+    "streak": 0
+  },
+  {
+    "observations": 16,
+    "rho": null,
+    "streak": 0
+  },
+  {
+    "observations": 17,
+    "rho": 0.016673345069609925,
+    "streak": 0
+  },
+  {
+    "observations": 18,
+    "rho": 0.010497864734668337,
+    "streak": 0
+  },
+  {
+    "observations": 19,
+    "rho": 0.0119684405298897,
+    "streak": 0
+  },
+  {
+    "observations": 20,
+    "rho": 0.008107487266388156,
+    "streak": 1
+  },
+  {
+    "observations": 21,
+    "rho": 0.00826597686607078,
+    "streak": 2
+  },
+  {
+    "observations": 22,
+    "rho": 0.0075325862673455935,
+    "streak": 3
+  }
+]

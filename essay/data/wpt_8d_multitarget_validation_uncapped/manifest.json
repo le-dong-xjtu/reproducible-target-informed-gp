@@ -1,0 +1,65 @@
+{
+  "targets_nH": [
+    1000.0,
+    1050.0,
+    1100.0,
+    1150.0,
+    1200.0,
+    1250.0,
+    1300.0,
+    1350.0,
+    1400.0,
+    1450.0,
+    1500.0,
+    1550.0,
+    1600.0,
+    1650.0,
+    1700.0,
+    1750.0,
+    1800.0,
+    1850.0,
+    1900.0,
+    1950.0,
+    2000.0
+  ],
+  "relative_tolerance": 0.025,
+  "policies": [
+    "automated",
+    "center_pf_cei_matched",
+    "conventional_cei_matched",
+    "sobol_matched",
+    "forced_b50",
+    "conventional_cei_b50"
+  ],
+  "deterministic": true,
+  "shared_gp": {
+    "kernel": "Constant * isotropic Matern-5/2 + White",
+    "constant_initial": 1.0,
+    "constant_bounds": [
+      0.001,
+      1000.0
+    ],
+    "length_scale_initial": 0.35,
+    "length_scale_bounds": [
+      0.03,
+      3.0
+    ],
+    "white_initial": 1e-05,
+    "white_bounds": [
+      1e-08,
+      0.01
+    ],
+    "alpha": 1e-06,
+    "normalize_y": true,
+    "optimizer": "deterministic Halton multistart L-BFGS-B",
+    "starts": 5
+  },
+  "shared_candidates": "unscrambled Sobol blocks",
+  "automated_parameters_frozen": {
+    "omega": 0.75,
+    "delta": 0.01,
+    "patience": 3,
+    "minimum_model_building": 17,
+    "confirmation": 10
+  }
+}

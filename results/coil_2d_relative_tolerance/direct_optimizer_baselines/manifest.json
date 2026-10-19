@@ -1,0 +1,6 @@
+{
+  "relative_inductance_tolerance": 0.025,
+  "stopping": "Feasible result required; then stop after five cycles without a \u22651% reduction in best feasible R. Safety cap: complete 1,110-point grid.",
+  "loss": "u=r/(1+r), r=R/R_exhaustive-1; infeasible=1",
+  "aggregation": "Discard highest and lowest of 10 seeds per target/method, average remaining eight."
+}

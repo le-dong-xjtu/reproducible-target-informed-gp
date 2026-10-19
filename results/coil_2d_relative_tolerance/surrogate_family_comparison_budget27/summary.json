@@ -1,0 +1,42 @@
+{
+  "gp_random": {
+    "cases": 870,
+    "qualification_rate": 0.9988505747126437,
+    "exact_optimum_cases": 695,
+    "exact_optimum_rate": 0.7988505747126436,
+    "all_case_mean_u": 0.00682196389966421,
+    "targetwise_trimmed_mean_u": 0.0044579017717206095,
+    "worst_seed_mean_u": 0.022059666097775796,
+    "worst_seed": 20261021
+  },
+  "gp_active": {
+    "cases": 870,
+    "qualification_rate": 1.0,
+    "exact_optimum_cases": 740,
+    "exact_optimum_rate": 0.8505747126436781,
+    "all_case_mean_u": 0.0028725806159101887,
+    "targetwise_trimmed_mean_u": 0.0020497129952128123,
+    "worst_seed_mean_u": 0.006113902033562378,
+    "worst_seed": 20261022
+  },
+  "ensemble_random": {
+    "cases": 870,
+    "qualification_rate": 0.7137931034482758,
+    "exact_optimum_cases": 274,
+    "exact_optimum_rate": 0.31494252873563217,
+    "all_case_mean_u": 0.31003044577271255,
+    "targetwise_trimmed_mean_u": 0.2847821615454391,
+    "worst_seed_mean_u": 0.6488153725208406,
+    "worst_seed": 20261022
+  },
+  "ensemble_active": {
+    "cases": 870,
+    "qualification_rate": 0.9057471264367816,
+    "exact_optimum_cases": 651,
+    "exact_optimum_rate": 0.7482758620689656,
+    "all_case_mean_u": 0.10373776801300393,
+    "targetwise_trimmed_mean_u": 0.0744859150916956,
+    "worst_seed_mean_u": 0.2676917159185821,
+    "worst_seed": 20261018
+  }
+}

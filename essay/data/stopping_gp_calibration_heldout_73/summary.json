@@ -1,0 +1,30 @@
+{
+  "cases": 73,
+  "evaluation_point": "final target-conditioned GP at held-out stopping point, before confirmations",
+  "all_unseen_grid_macro_mean": {
+    "all_L_mae": 1.464647769405914,
+    "all_L_coverage_1sigma": 0.4458836109566173,
+    "all_L_coverage_2sigma": 0.7731365306889645,
+    "all_L_error_sigma_correlation": 0.7980204932171202,
+    "all_R_mae": 0.02192420377951075,
+    "all_R_coverage_1sigma": 0.5663724679478265,
+    "all_R_coverage_2sigma": 0.8681962470562912,
+    "all_R_error_sigma_correlation": 0.8036627800706527,
+    "feasibility_brier": 0.0007018399063116438
+  },
+  "true_feasible_region_macro_mean": {
+    "feasible_L_mae": 0.06972944979147572,
+    "feasible_L_coverage_1sigma": 0.8078440965427267,
+    "feasible_L_coverage_2sigma": 0.9646543715036867,
+    "feasible_R_mae": 0.0018700419294594127,
+    "feasible_R_coverage_1sigma": 0.8211038961038961,
+    "feasible_R_coverage_2sigma": 0.9625985886259858
+  },
+  "stopping_quality": {
+    "incumbent_exact_at_stop": 73,
+    "mean_actual_available_relative_improvement": 0.0,
+    "maximum_actual_available_relative_improvement": 0.0,
+    "targets_with_actual_improvement_above_1pct": 0,
+    "mean_final_predicted_rho": 4.71651005639711e-06
+  }
+}
