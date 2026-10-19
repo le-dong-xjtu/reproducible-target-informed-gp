@@ -5,7 +5,7 @@
     "kappa": 2.0,
     "maximized_acquisition": "p_feasible*exp(-unit_scale(lower_bound))",
     "source": "methods/target_informed_gp/gp_conventional_acquisition_baselines.py",
-    "source_sha256": "ab21d2fd7aa4756a872d2467cf40c5fc5a89bbc60b8027550035c513a0230e47"
+    "source_sha256": "a5b1faca2db3d49500b637534593e7d8778cda7c0e4992e0b47af41bca30e0ba"
   },
   "fresh_replay_summary": {
     "cases": 870,

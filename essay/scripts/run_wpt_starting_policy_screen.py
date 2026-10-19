@@ -1,12 +1,12 @@
-from __future__ import annotations
-
 import csv
 import json
+import sys
 from pathlib import Path
 
 import numpy as np
 from threadpoolctl import threadpool_limits
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 import run_automatic_gp_wpt8d as auto
 from run_wpt_8d_multitarget_validation import components, confirmation
 
@@ -41,7 +41,10 @@ def run(seed=None):
     while True:
         step = len(x) - 1
         candidates = auto.unseen_unique(
-            stream[1 + step * auto.N_CANDIDATES : 1 + (step + 1) * auto.N_CANDIDATES], x
+            stream[
+                1 + step * auto.N_CANDIDATES : 1 + (step + 1) * auto.N_CANDIDATES
+            ],
+            x,
         )
         models = auto.gps(auto.normalize(x), y)
         pf, _, sd, cei, incumbent = components(
@@ -108,8 +111,8 @@ def run(seed=None):
                 "design": json.dumps(point.tolist()),
             }
         )
-    with (folder / "trace.csv").open("w", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=list(trace[0]))
+    with (folder / "trace.csv").open("w", newline="") as stream_out:
+        writer = csv.DictWriter(stream_out, fieldnames=list(trace[0]))
         writer.writeheader()
         writer.writerows(trace)
     (folder / "result.json").write_text(json.dumps(result, indent=2) + "\n")

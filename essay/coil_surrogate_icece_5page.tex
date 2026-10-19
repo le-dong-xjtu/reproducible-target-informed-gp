@@ -56,7 +56,7 @@ Each surrogate is built from 17 target-agnostic observations and reused across a
 As shown in Fig.~\ref{fig:surrogates}, active uncertainty sampling improves both model families across the 870 target-seed cases. For the GP, it raises feasibility from 99.89\% to 100\% and exact optimum recovery from 695 to 740, and cuts all-case mean bounded loss by 57.9\% (from 0.00682 to 0.00287). For the DEs, active sampling raises exact recovery from 274 to 651 and reduces all-case mean loss from 0.310 to 0.104. Because the GP outperforms the DE on every aggregate metric including a mean loss roughly 36$\times$ lower, we use GP surrogates in the target-conditioned study that follows.
 \begin{figure}[!t]
  \centering
- \includegraphics[width=0.98\columnwidth]{figures/conference/fig01_surrogate_comparison.pdf}
+ \includegraphics[width=0.98\columnwidth]{figures/fig01_surrogate_comparison.pdf}
  \caption{Matched reusable-surrogate screen at nominal per-target $B=27$. Both model families use 17 model-building observations and 10 target-specific final evaluations. Lower bounded loss is better.}
  \label{fig:surrogates}
 \end{figure}
@@ -66,7 +66,7 @@ As a direct-search reference, we use simulated annealing (SA) \cite{kirkpatrick}
 
 \begin{figure}[!t]
  \centering
- \includegraphics[width=0.98\columnwidth]{figures/conference/fig02_gp_vs_sa.pdf}
+ \includegraphics[width=0.98\columnwidth]{figures/fig02_gp_vs_sa.pdf}
  \caption{Reusable active GP versus direct SA. The upper panel reports targetwise-trimmed bounded loss and the lower panel reports forward-model evaluations.}
  \label{fig:gp-sa}
 \end{figure}
@@ -96,7 +96,7 @@ Across ten seeds and 87 targets at $B=6+11+10=27$ (Fig.~\ref{fig:acquisition}), 
 
 \begin{figure}[!t]
  \centering
- \includegraphics[width=0.98\columnwidth]{figures/conference/fig03_acquisition_comparison.pdf}
+ \includegraphics[width=0.98\columnwidth]{figures/fig03_acquisition_comparison.pdf}
  \caption{Matched target-conditioned acquisition comparison at $B=27$ over ten seeds and 87 targets. Lower bounded loss is better.}
  \label{fig:acquisition}
 \end{figure}
@@ -176,7 +176,7 @@ Starting from the normalized center, we select candidates from consecutive block
 
 \begin{figure}[!t]
  \centering
- \includegraphics[width=0.98\columnwidth]{figures/conference/fig04_initialization_reliability.pdf}
+ \includegraphics[width=0.98\columnwidth]{figures/fig04_initialization_reliability.pdf}
  \caption{WPT trajectories at 1500~nH. Squares mark final verification; the dashed line marks the target.}
  \label{fig:reliability}
 \end{figure}
@@ -217,7 +217,7 @@ With Maxwell at 1000~nH, the automatic workflow stops after 20 model-building ev
 
 \begin{figure}[!t]
  \centering
- \includegraphics[width=0.82\columnwidth]{figures/conference/fig05_numerical_wpt_geometry.pdf}
+ \includegraphics[width=0.82\columnwidth]{figures/fig05_numerical_wpt_geometry.pdf}
  \caption{Selected nominal-pose 1500~nH design. The aligned transmitter and receiver planes are separated by 70~mm.}
  \label{fig:wpt-geometry}
 \end{figure}
@@ -225,7 +225,7 @@ With Maxwell at 1000~nH, the automatic workflow stops after 20 model-building ev
 Fig.~\ref{fig:maxwell-geometry} shows the automatic run's selected Maxwell geometry from evaluation 25, in the final verification batch.
 \begin{figure}[!t]
  \centering
- \includegraphics[width=0.98\columnwidth]{figures/conference/fig06_maxwell_selected_geometry.pdf}
+ \includegraphics[width=0.98\columnwidth]{figures/fig06_maxwell_selected_geometry.pdf}
  \caption{Selected Maxwell geometry at evaluation 25: seven-sided Tx (orange), six-sided Rx (green), eight turns each, separated by 70~mm.}
  \label{fig:maxwell-geometry}
 \end{figure}

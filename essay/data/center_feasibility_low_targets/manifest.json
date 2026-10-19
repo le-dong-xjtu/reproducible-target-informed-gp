@@ -1,6 +1,6 @@
 {
   "status": "complete",
-  "script": "/Users/saishangjiangnandong/Desktop/Essay 2 (Algorithmic Discussion)/essay/scripts/run_center_feasibility_low_targets.py",
+  "script": "essay/scripts/run_center_feasibility_low_targets.py",
   "targets_mH": [
     2,
     3,

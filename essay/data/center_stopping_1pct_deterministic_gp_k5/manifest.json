@@ -1,6 +1,6 @@
 {
   "status": "complete",
-  "script": "/Users/saishangjiangnandong/Desktop/algorithm_discussion/essay/scripts/run_center_cosine_stopping_smoke.py",
+  "script": "essay/scripts/run_uncapped_automatic_2d.py",
   "policies": [
     "ordinary_stop"
   ],

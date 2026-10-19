@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import argparse
 import csv
 import json
@@ -18,7 +16,7 @@ from scipy.interpolate import PchipInterpolator
 ESSAY = Path(__file__).resolve().parents[1]
 PROJECT = ESSAY.parent
 DATA = ESSAY / "data"
-FIGURES = ESSAY / "figures" / "conference"
+FIGURES = ESSAY / "figures"
 WIRE_WIDTH = 0.68
 LIGHT_BLUE = "#9ECAE9"
 DARK_BLUE = "#2171B5"
@@ -49,7 +47,7 @@ def save_figure(fig, number, padding=0.02):
     print(path)
 
 
-def configure() -> None:
+def configure():
     plt.rcParams.update(
         {
             "font.family": "serif",
@@ -68,7 +66,7 @@ def configure() -> None:
     )
 
 
-def render_figure_1() -> None:
+def render_figure_1():
     rows = benchmark_rows(
         "results/coil_2d_relative_tolerance/surrogate_family_comparison_budget27/results.csv"
     )
@@ -163,21 +161,21 @@ def render_figure_1() -> None:
     plt.close(fig)
 
 
-def direct_rows_by_target() -> dict[str, list[dict[str, float]]]:
+def direct_rows_by_target():
     rows = read_csv("direct_optimizer_summary_trimmed.csv")
-    grouped: dict[str, list[dict[str, float]]] = defaultdict(list)
-    for r in rows:
-        grouped[r["method"]].append(
+    grouped = defaultdict(list)
+    for row in rows:
+        grouped[row["method"]].append(
             {
-                "target": float(r["target_mH"]),
-                "u": float(r["trimmed_bounded_loss_u"]),
-                "cost": float(r["trimmed_true_evaluations"]),
+                "target": float(row["target_mH"]),
+                "u": float(row["trimmed_bounded_loss_u"]),
+                "cost": float(row["trimmed_true_evaluations"]),
             }
         )
     return grouped
 
 
-def render_figure_2() -> None:
+def render_figure_2():
     rows = benchmark_rows(
         "results/coil_2d_relative_tolerance/surrogate_family_comparison_budget27/results.csv"
     )
@@ -257,14 +255,14 @@ def render_figure_2() -> None:
     plt.close(fig)
 
 
-def benchmark_rows(relative_path: str) -> list[dict[str, str]]:
+def benchmark_rows(relative_path):
     with (PROJECT / relative_path).open(newline="") as stream:
         return list(csv.DictReader(stream))
 
 
-def loss_summary(rows: list[dict[str, str]]) -> tuple[float, float, float]:
-    by_target: dict[int, list[float]] = defaultdict(list)
-    by_seed: dict[int, list[float]] = defaultdict(list)
+def loss_summary(rows):
+    by_target = defaultdict(list)
+    by_seed = defaultdict(list)
     all_losses = []
     for row in rows:
         loss = float(row["bounded_loss_u"])
@@ -276,7 +274,7 @@ def loss_summary(rows: list[dict[str, str]]) -> tuple[float, float, float]:
     return (float(np.mean(all_losses)), float(np.mean(trimmed)), float(worst_seed))
 
 
-def render_figure_3() -> None:
+def render_figure_3():
     methods = {
         "Reusable active GP": benchmark_rows(
             "results/coil_2d_relative_tolerance/global_dual_gp_budget27/alpha_0p5/results.csv"
@@ -362,48 +360,86 @@ def render_figure_3() -> None:
     plt.close(fig)
 
 
-def render_figure_4() -> None:
+def render_figure_4():
     folder = DATA / "wpt_starting_policy_screen_uncapped"
-    results = [load_json(folder / policy / "result.json") for policy in
-               ("deterministic", "random6_20261019")]
+    results = [
+        load_json(folder / policy / "result.json")
+        for policy in ("deterministic", "random6_20261019")
+    ]
     fig, ax = plt.subplots(figsize=(3.5, 2.05))
     fig.subplots_adjust(left=0.18, right=0.98, bottom=0.22, top=0.97)
-    for result, color, label in zip(results, (DARK_BLUE, LIGHT_BLUE),
-                                    ("Deterministic center", "Random-six (20261019)")):
+    for result, color, label in zip(
+        results,
+        (DARK_BLUE, LIGHT_BLUE),
+        ("Deterministic center", "Random-six (20261019)"),
+    ):
         with (folder / result["policy"] / "trace.csv").open(newline="") as stream:
             rows = list(csv.DictReader(stream))
         calls = np.array([int(row["evaluation"]) for row in rows])
         mutual = np.array([float(row["M_nH"]) for row in rows])
         n_model = result["n_model_building"]
-        ax.plot(calls[:n_model], mutual[:n_model], color=color, lw=1.2,
-                marker="o", ms=2.0, label=label)
-        ax.plot(calls[n_model - 1:], mutual[n_model - 1:], color=color, lw=1.2)
-        ax.scatter(calls[n_model:], mutual[n_model:], color=color,
-                   marker="s", s=8, linewidths=0.4, zorder=4)
+        ax.plot(
+            calls[:n_model],
+            mutual[:n_model],
+            color=color,
+            lw=1.2,
+            marker="o",
+            ms=2.0,
+            label=label,
+        )
+        ax.plot(calls[n_model - 1 :], mutual[n_model - 1 :], color=color, lw=1.2)
+        ax.scatter(
+            calls[n_model:],
+            mutual[n_model:],
+            color=color,
+            marker="s",
+            s=8,
+            linewidths=0.4,
+            zorder=4,
+        )
         assert result["stopped_naturally"]
-    ax.axhline(1500, color=DARK_ORANGE, ls=(0, (2, 2)), lw=1.4,
-               zorder=5, label="Target: 1500 nH")
+    ax.axhline(
+        1500,
+        color=DARK_ORANGE,
+        ls=(0, (2, 2)),
+        lw=1.4,
+        zorder=5,
+        label="Target: 1500 nH",
+    )
     ax.grid(color="#D9D9D9", lw=0.55)
     ax.tick_params(axis="both", labelsize=8.0)
     ax.set_xlabel("Total evaluations", labelpad=2.5)
     ax.set_ylabel("Mutual inductance (nH)")
     ax.set_xlim(0, max(r["total_evaluations"] for r in results) + 2)
     ax.set_xticks([0, 10, 20, 30, 40, 50])
-    ax.legend(loc="upper right", bbox_to_anchor=(0.98, 0.96),
-              frameon=True, facecolor="white", edgecolor="0.85",
-              fontsize=6.2, handlelength=1.5, handletextpad=0.4, borderpad=0.28)
+    ax.legend(
+        loc="upper right",
+        bbox_to_anchor=(0.98, 0.96),
+        frameon=True,
+        facecolor="white",
+        edgecolor="0.85",
+        fontsize=6.2,
+        handlelength=1.5,
+        handletextpad=0.4,
+        borderpad=0.28,
+    )
     save_figure(fig, 4)
     plt.close(fig)
-    (FIGURES / "fig04_reliability_evidence.json").write_text(json.dumps({
-        "source": str(folder), "results": results,
-        "selection": "User-selected seed 20261019 from the ten-seed screen; not the worst-resistance seed.",
-        "maximum_automatic_evaluations": None,
-    }, indent=2) + "\n")
+    (FIGURES / "fig04_reliability_evidence.json").write_text(
+        json.dumps(
+            {
+                "source": str(folder.relative_to(PROJECT)),
+                "results": results,
+                "selection": "Seed 20261019 from the ten-seed screen.",
+                "maximum_automatic_evaluations": None,
+            },
+            indent=2,
+        )
+        + "\n"
+    )
 
 
-def _draw_polygon_coil(
-    ax, ns: int, nt: int, spacing: float, inner_radius: float, z: float, color: str
-) -> None:
+def _draw_polygon_coil(ax, ns, nt, spacing, inner_radius, z, color):
     angles = 2 * np.pi * np.arange(ns) / ns
     unit_vertices = np.column_stack((np.cos(angles), np.sin(angles)))
     for turn in range(nt):
@@ -415,7 +451,7 @@ def _draw_polygon_coil(
         )
 
 
-def render_figure_5() -> None:
+def render_figure_5():
     result = load_json(DATA / "wpt_8d_automated_cei" / "result.json")
     ns_t, nt_t, s_t, ri_t, ns_r, nt_r, s_r, ri_r = result["design"]
     fig = plt.figure(figsize=(3.5, 2.75))
@@ -488,11 +524,13 @@ RENDERERS = {
 
 def main():
     global FIGURES
-    parser = argparse.ArgumentParser(
-        description="Generate the six conference figure PDFs."
-    )
+    parser = argparse.ArgumentParser(description="Generate the six figure PDFs.")
     parser.add_argument(
-        "--figures", type=int, choices=range(1, 7), nargs="+", default=list(range(1, 7))
+        "--figures",
+        type=int,
+        choices=range(1, 7),
+        nargs="+",
+        default=list(range(1, 7)),
     )
     parser.add_argument("--output-dir", type=Path, default=FIGURES)
     args = parser.parse_args()

@@ -1,54 +1,81 @@
-from __future__ import annotations
-
 import json
 import random
 import warnings
 from pathlib import Path
 
 import numpy as np
-from scipy.special import ndtr
 from scipy.linalg import solve_triangular
+from scipy.special import ndtr
 from sklearn.exceptions import ConvergenceWarning
 from sklearn.gaussian_process import GaussianProcessRegressor
 from sklearn.gaussian_process.kernels import ConstantKernel, RBF, WhiteKernel
 
-root = Path(__file__).parents[2]
-c = json.loads((root / "config" / "coil_problem.json").read_text())
-s = json.loads((root / "config" / "surrogates" / "target_conditioned_gp.json").read_text())
-acquisition_mode = s.get("acquisition_mode", "tcfei")
-if acquisition_mode not in {"tcfei", "cei", "clcb", "ivr"}:
-    raise ValueError("acquisition_mode must be 'tcfei', 'cei', 'clcb', or 'ivr'")
-w, g = c["wire"], c["geometry"]
-p = w["diameter_mm"] * w["winding_factor"]
-target = float(s["target_mH"])
-epsilon = float(s["relative_tolerance"])
-pts = [(T, n) for T in range(g["layers"]["min"], g["layers"]["max"] + 1)
-       for n in range(g["turns_per_layer"]["min"], g["turns_per_layer"]["max"] + 1)]
-X = np.array([[(T - g["layers"]["min"]) / (g["layers"]["max"] - g["layers"]["min"]),
-               (n - g["turns_per_layer"]["min"]) /
-               (g["turns_per_layer"]["max"] - g["turns_per_layer"]["min"])] for T, n in pts])
+root = Path(__file__).resolve().parents[2]
+config = json.loads((root / "config" / "coil_problem.json").read_text())
+settings = json.loads(
+    (root / "config" / "surrogates" / "target_conditioned_gp.json").read_text()
+)
+acquisition_mode = settings.get("acquisition_mode", "cei")
+if acquisition_mode not in {"cei", "clcb", "ivr"}:
+    raise ValueError("acquisition_mode must be 'cei', 'clcb', or 'ivr'")
+wire, geometry = config["wire"], config["geometry"]
+pitch = wire["diameter_mm"] * wire["winding_factor"]
+target = float(settings["target_mH"])
+epsilon = float(settings["relative_tolerance"])
+points = [
+    (layers, turns)
+    for layers in range(geometry["layers"]["min"], geometry["layers"]["max"] + 1)
+    for turns in range(
+        geometry["turns_per_layer"]["min"], geometry["turns_per_layer"]["max"] + 1
+    )
+]
+X = np.array([
+    [
+        (layers - geometry["layers"]["min"])
+        / (geometry["layers"]["max"] - geometry["layers"]["min"]),
+        (turns - geometry["turns_per_layer"]["min"])
+        / (geometry["turns_per_layer"]["max"] - geometry["turns_per_layer"]["min"]),
+    ]
+    for layers, turns in points
+])
 
 
-def ev(i):
-    T, n = pts[i]
-    N, H, thickness = T * n, n * p, T * p
-    diameter = g["inner_diameter_mm"] + thickness
-    L = .08 * N**2 * diameter**2 * 1e-4 / (3 * diameter + 9 * H + 10 * thickness)
-    R = 4 * w["resistivity_ohm_mm"] * N * diameter / w["diameter_mm"]**2
-    return {"point": [T, n], "L_mH": L, "R_ohm": R,
-            "feasible": abs(L - target) / target <= epsilon}
+def evaluate_design(index):
+    layers, turns = points[index]
+    total_turns = layers * turns
+    height = turns * pitch
+    thickness = layers * pitch
+    diameter = geometry["inner_diameter_mm"] + thickness
+    inductance = (
+        0.08
+        * total_turns**2
+        * diameter**2
+        * 1e-4
+        / (3 * diameter + 9 * height + 10 * thickness)
+    )
+    resistance = (
+        4 * wire["resistivity_ohm_mm"] * total_turns * diameter / wire["diameter_mm"] ** 2
+    )
+    return {
+        "point": [layers, turns],
+        "L_mH": inductance,
+        "R_ohm": resistance,
+        "feasible": abs(inductance - target) / target <= epsilon,
+    }
 
 
 def fit_gp(ids, field, restarts):
-    values = np.array([ev(i)[field] for i in ids])
+    values = np.array([evaluate_design(index)[field] for index in ids])
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", RuntimeWarning)
         warnings.simplefilter("ignore", ConvergenceWarning)
         model = GaussianProcessRegressor(
-            kernel=ConstantKernel(1., (1e-3, 1e3))
-            * RBF([.25, .25], length_scale_bounds=(1e-2, 10.0))
+            kernel=ConstantKernel(1.0, (1e-3, 1e3))
+            * RBF([0.25, 0.25], length_scale_bounds=(1e-2, 10.0))
             + WhiteKernel(1e-6, noise_level_bounds=(1e-8, 1e-2)),
-            alpha=1e-10, normalize_y=True, random_state=s["seed"],
+            alpha=1e-10,
+            normalize_y=True,
+            random_state=settings["seed"],
             n_restarts_optimizer=restarts,
         ).fit(X[ids], values)
         predicted = model.predict(X, return_std=True)
@@ -79,63 +106,60 @@ def unit_scale(values):
     return (values - np.min(values)) / span if span > 0 else np.zeros_like(values)
 
 
-rng = random.Random(s["seed"])
-seen = set(rng.sample(range(len(pts)), int(s["initial_samples"])))
+rng = random.Random(settings["seed"])
+seen = set(rng.sample(range(len(points)), int(settings["initial_samples"])))
 initial_seen = set(seen)
-initial_L = np.array([ev(i)["L_mH"] for i in sorted(initial_seen)])
-initial_R = np.array([ev(i)["R_ohm"] for i in sorted(initial_seen)])
+initial_L = np.array([evaluate_design(index)["L_mH"] for index in sorted(initial_seen)])
+initial_R = np.array([evaluate_design(index)["R_ohm"] for index in sorted(initial_seen)])
 global_scale_L = max(float(np.std(initial_L)), 1e-12)
 global_scale_R = max(float(np.std(initial_R)), 1e-12)
 acquisition_trace = []
-steps = int(s["maximum_true_evaluations"]) - len(seen)
+steps = int(settings["maximum_true_evaluations"]) - len(seen)
 
 for step in range(steps):
     ids = sorted(seen)
     mean, std, model_L = fit_gp(ids, "L_mH", 3)
     mean_R, std_R, model_R = fit_gp(ids, "R_ohm", 3)
-    unseen = np.array([i for i in range(len(pts)) if i not in seen])
+    unseen = np.array([index for index in range(len(points)) if index not in seen])
     sigma_L = np.maximum(std[unseen], 1e-12)
     lower, upper = target * (1 - epsilon), target * (1 + epsilon)
-    p_feasible = ndtr((upper - mean[unseen]) / sigma_L) - ndtr((lower - mean[unseen]) / sigma_L)
-    clipped_p = np.clip(p_feasible, 1e-12, 1 - 1e-12)
-    entropy = -(clipped_p * np.log(clipped_p) + (1 - clipped_p) * np.log(1 - clipped_p)) / np.log(2)
-    distance = np.min(np.linalg.norm(X[unseen, None, :] - X[ids][None, :, :], axis=2), axis=1) / np.sqrt(2)
-
-    progress = step / max(steps - 1, 1)
-    entropy_weight = float(s["initial_entropy_weight"]) * (1 - progress)
-    diversity_weight = float(s["initial_diversity_weight"]) * (1 - progress)
-    feasible_seen = [ev(i) for i in ids if ev(i)["feasible"]]
+    p_feasible = ndtr((upper - mean[unseen]) / sigma_L) - ndtr(
+        (lower - mean[unseen]) / sigma_L
+    )
+    feasible_seen = [
+        evaluate_design(index) for index in ids if evaluate_design(index)["feasible"]
+    ]
     if feasible_seen:
         incumbent = min(point["R_ohm"] for point in feasible_seen)
         sigma_R = np.maximum(std_R[unseen], 1e-12)
         z = (incumbent - mean_R[unseen]) / sigma_R
-        expected_improvement = ((incumbent - mean_R[unseen]) * ndtr(z)
-                                + sigma_R * np.exp(-.5 * z**2) / np.sqrt(2 * np.pi))
+        expected_improvement = (incumbent - mean_R[unseen]) * ndtr(
+            z
+        ) + sigma_R * np.exp(-0.5 * z**2) / np.sqrt(2 * np.pi)
         local = p_feasible * np.maximum(expected_improvement, 0) / incumbent
         phase = "resistance_improvement"
     else:
         local = p_feasible
         phase = "feasibility_discovery"
     if acquisition_mode == "cei":
-        omega = 1.0
         acquisition = local
     elif acquisition_mode == "clcb":
-        omega = 1.0
-        kappa = float(s.get("lcb_kappa", 2.0))
+        kappa = float(settings.get("lcb_kappa", 2.0))
         resistance_lcb = mean_R[unseen] - kappa * np.maximum(std_R[unseen], 1e-12)
         acquisition = p_feasible * np.exp(-unit_scale(resistance_lcb))
         phase = "constrained_lcb"
-    elif acquisition_mode == "ivr":
-        omega = 1.0
-        roi_size = min(int(s.get("ivr_roi_size", 128)), len(pts))
-        global_fraction = float(s.get("ivr_global_fraction", 0.25))
+    else:
+        roi_size = min(int(settings.get("ivr_roi_size", 128)), len(points))
+        global_fraction = float(settings.get("ivr_global_fraction", 0.25))
         global_count = max(1, int(round(global_fraction * roi_size)))
         local_count = roi_size - global_count
-        global_ids = np.linspace(0, len(pts) - 1, global_count, dtype=int)
-        local_ids = np.argsort(-np.asarray(
-            ndtr((upper - mean) / np.maximum(std, 1e-12))
-            - ndtr((lower - mean) / np.maximum(std, 1e-12))
-        ))[:local_count]
+        global_ids = np.linspace(0, len(points) - 1, global_count, dtype=int)
+        local_ids = np.argsort(
+            -np.asarray(
+                ndtr((upper - mean) / np.maximum(std, 1e-12))
+                - ndtr((lower - mean) / np.maximum(std, 1e-12))
+            )
+        )[:local_count]
         roi = np.unique(np.concatenate([global_ids, local_ids]))
         full_p = np.asarray(
             ndtr((upper - mean[roi]) / np.maximum(std[roi], 1e-12))
@@ -147,65 +171,90 @@ for step in range(steps):
         )
         score_L = ivr_score(model_L, ids, unseen, roi, weights)
         score_R = ivr_score(model_R, ids, unseen, roi, weights)
-        response_weight = float(s.get("ivr_resistance_weight", 0.5))
-        acquisition = ((1 - response_weight) * unit_scale(score_L)
-                       + response_weight * unit_scale(score_R))
+        response_weight = float(settings.get("ivr_resistance_weight", 0.5))
+        acquisition = (1 - response_weight) * unit_scale(
+            score_L
+        ) + response_weight * unit_scale(score_R)
         phase = "weighted_integrated_variance_reduction"
-    else:
-        local_score = unit_scale(local) + entropy_weight * entropy + diversity_weight * distance
-        omega = float(s["initial_local_weight"]) + progress * (
-            float(s["final_local_weight"]) - float(s["initial_local_weight"])
-        )
-        acquisition = (1 - omega) * unit_scale(sigma_L) + omega * unit_scale(local_score)
-    if acquisition_mode in {"cei", "clcb", "ivr"}:
-        local_weight = float(s.get("local_weight", 1.0))
-        global_weight = float(s.get("global_weight", 0.0))
-        if local_weight < 0 or global_weight < 0 or not np.isclose(local_weight + global_weight, 1.0):
-            raise ValueError("local_weight and global_weight must be nonnegative and sum to one")
-        global_alpha = float(s.get("global_response_alpha", 0.5))
-        if not 0 <= global_alpha <= 1:
-            raise ValueError("global_response_alpha must lie in [0, 1]")
-        global_acquisition = (
-            (1 - global_alpha) * sigma_L / global_scale_L
-            + global_alpha * np.maximum(std_R[unseen], 1e-12) / global_scale_R
-        )
-        acquisition = (local_weight * unit_scale(acquisition)
-                       + global_weight * unit_scale(global_acquisition))
+
+    local_weight = float(settings.get("local_weight", 1.0))
+    global_weight = float(settings.get("global_weight", 0.0))
+    if (
+        local_weight < 0
+        or global_weight < 0
+        or not np.isclose(local_weight + global_weight, 1.0)
+    ):
+        raise ValueError("local_weight and global_weight must be nonnegative and sum to one")
+    global_alpha = float(settings.get("global_response_alpha", 0.5))
+    if not 0 <= global_alpha <= 1:
+        raise ValueError("global_response_alpha must lie in [0, 1]")
+    global_acquisition = (1 - global_alpha) * sigma_L / global_scale_L + global_alpha * np.maximum(
+        std_R[unseen], 1e-12
+    ) / global_scale_R
+    acquisition = local_weight * unit_scale(acquisition) + global_weight * unit_scale(
+        global_acquisition
+    )
     selected = int(unseen[int(np.argmax(acquisition))])
-    acquisition_trace.append({"step": step + 1, "point": list(pts[selected]), "phase": phase,
-                              "local_weight": omega, "score": float(np.max(acquisition))})
+    acquisition_trace.append(
+        {
+            "step": step + 1,
+            "point": list(points[selected]),
+            "phase": phase,
+            "local_weight": local_weight,
+            "score": float(np.max(acquisition)),
+        }
+    )
     seen.add(selected)
 
 ids = sorted(seen)
 mean, std, model_L = fit_gp(ids, "L_mH", 5)
 mean_R, std_R, model_R = fit_gp(ids, "R_ohm", 5)
-unseen = np.array([i for i in range(len(pts)) if i not in seen])
+unseen = np.array([index for index in range(len(points)) if index not in seen])
 sigma_L = np.maximum(std[unseen], 1e-12)
 lower, upper = target * (1 - epsilon), target * (1 + epsilon)
-p_feasible = ndtr((upper - mean[unseen]) / sigma_L) - ndtr((lower - mean[unseen]) / sigma_L)
+p_feasible = ndtr((upper - mean[unseen]) / sigma_L) - ndtr(
+    (lower - mean[unseen]) / sigma_L
+)
 scaled_R = unit_scale(mean_R[unseen])
 validation_score = p_feasible * np.exp(-scaled_R)
-final_ids = unseen[np.argsort(-validation_score)[:int(s["final_validation_count"])]]
-final = [dict(ev(int(i)), predicted_mean_L_mH=float(mean[i]), sigma_L_mH=float(std[i]),
-              predicted_mean_R_ohm=float(mean_R[i]), sigma_R_ohm=float(std_R[i])) for i in final_ids]
-decision_pool = [dict(ev(i), source="initial" if i in initial_seen else "active_acquisition") for i in ids]
+final_ids = unseen[
+    np.argsort(-validation_score)[: int(settings["final_validation_count"])]
+]
+final = [
+    dict(
+        evaluate_design(int(index)),
+        predicted_mean_L_mH=float(mean[index]),
+        sigma_L_mH=float(std[index]),
+        predicted_mean_R_ohm=float(mean_R[index]),
+        sigma_R_ohm=float(std_R[index]),
+    )
+    for index in final_ids
+]
+decision_pool = [
+    dict(
+        evaluate_design(index),
+        source="initial" if index in initial_seen else "active_acquisition",
+    )
+    for index in ids
+]
 decision_pool += [dict(point, source="validation") for point in final]
 valid = [point for point in decision_pool if point["feasible"]]
-decision = min(valid, key=lambda point: point["R_ohm"]) if valid else min(
-    decision_pool, key=lambda point: abs(point["L_mH"] - target) / target
+decision = (
+    min(valid, key=lambda point: point["R_ohm"])
+    if valid
+    else min(decision_pool, key=lambda point: abs(point["L_mH"] - target) / target)
 )
 out = {
     "method": {
         "cei": "Conventional GP constrained expected improvement",
         "clcb": "Constrained GP lower confidence bound",
         "ivr": "Target-weighted integrated variance reduction",
-        "tcfei": "TC-FEI target-conditioned Gaussian process prototype",
     }[acquisition_mode],
     "acquisition_mode": acquisition_mode,
     "mixture_weights": {
-        "local": float(s.get("local_weight", 1.0)),
-        "global": float(s.get("global_weight", 0.0)),
-        "global_response_alpha": float(s.get("global_response_alpha", 0.5)),
+        "local": float(settings.get("local_weight", 1.0)),
+        "global": float(settings.get("global_weight", 0.0)),
+        "global_response_alpha": float(settings.get("global_response_alpha", 0.5)),
     },
     "target_mH": target,
     "relative_tolerance": epsilon,
@@ -215,7 +264,14 @@ out = {
     "final_validation": final,
     "acquisition_trace": acquisition_trace,
 }
-output = root / "results" / "coil_2d_relative_tolerance" / "tcfei_smoke_test"
+output = (
+    root
+    / "results"
+    / "coil_2d_relative_tolerance"
+    / "target_conditioned_gp_smoke_test"
+)
 output.mkdir(parents=True, exist_ok=True)
-(output / "target_conditioned_gp_result.json").write_text(json.dumps(out, indent=2) + "\n")
+(output / "target_conditioned_gp_result.json").write_text(
+    json.dumps(out, indent=2) + "\n"
+)
 print(json.dumps(out, indent=2))

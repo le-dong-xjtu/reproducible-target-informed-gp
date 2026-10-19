@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import argparse
 import contextlib
 import csv
@@ -7,6 +5,7 @@ import json
 import os
 import runpy
 import shutil
+import sys
 import tempfile
 from collections import defaultdict
 from concurrent.futures import ProcessPoolExecutor, as_completed
@@ -15,6 +14,7 @@ from pathlib import Path
 import numpy as np
 from scipy.special import ndtr
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 from compare_surrogate_targets import ROOT, truth_grid, write_json
 
 SEEDS = tuple(range(20261015, 20261025))
@@ -23,9 +23,19 @@ EPSILON = 0.025
 BUDGET = 27
 MODEL_EVALUATIONS = 17
 VALIDATIONS = 10
-FIELDS = ("method", "budget", "seed", "target_mH", "qualified",
-          "relative_resistance_regret", "bounded_loss_u", "decision_T",
-          "decision_n", "decision_L_mH", "decision_R_ohm")
+FIELDS = (
+    "method",
+    "budget",
+    "seed",
+    "target_mH",
+    "qualified",
+    "relative_resistance_regret",
+    "bounded_loss_u",
+    "decision_T",
+    "decision_n",
+    "decision_L_mH",
+    "decision_R_ohm",
+)
 
 
 def feasible(point, target):
@@ -47,15 +57,21 @@ def run_seed(task):
         (workspace / "results").mkdir()
         settings_path = workspace / "config" / "surrogates" / "global_dual_gp.json"
         settings = json.loads(settings_path.read_text())
-        settings.update({
-            "seed": seed,
-            "alpha": alpha,
-            "maximum_true_evaluations": MODEL_EVALUATIONS,
-            "final_validation_count": VALIDATIONS,
-        })
+        settings.update(
+            {
+                "seed": seed,
+                "alpha": alpha,
+                "maximum_true_evaluations": MODEL_EVALUATIONS,
+                "final_validation_count": VALIDATIONS,
+            }
+        )
         write_json(settings_path, settings)
         script = workspace / "methods" / "surrogate_selection" / "gp_dual_response.py"
-        with open(os.devnull, "w") as sink, contextlib.redirect_stdout(sink), contextlib.redirect_stderr(sink):
+        with (
+            open(os.devnull, "w") as sink,
+            contextlib.redirect_stdout(sink),
+            contextlib.redirect_stderr(sink),
+        ):
             values = runpy.run_path(str(script), run_name="__main__")
         config = json.loads((workspace / "config" / "coil_problem.json").read_text())
         grid = truth_grid(config)
@@ -67,26 +83,42 @@ def run_seed(task):
         rows = []
         for target in TARGETS:
             lower, upper = target * (1 - EPSILON), target * (1 + EPSILON)
-            p_feasible = (ndtr((upper - mean[unseen]) / std[unseen])
-                          - ndtr((lower - mean[unseen]) / std[unseen]))
+            p_feasible = ndtr((upper - mean[unseen]) / std[unseen]) - ndtr(
+                (lower - mean[unseen]) / std[unseen]
+            )
             validation_score = p_feasible * np.exp(-unit_scale(mean_R[unseen]))
             final_ids = unseen[np.argsort(-validation_score)[:VALIDATIONS]]
             candidates = [grid[int(index)] for index in final_ids]
             valid = [point for point in candidates if feasible(point, target)]
-            decision = min(valid, key=lambda point: point["R_ohm"]) if valid else min(
-                candidates, key=lambda point: abs(point["L_mH"] - target) / target
+            decision = (
+                min(valid, key=lambda point: point["R_ohm"])
+                if valid
+                else min(
+                    candidates, key=lambda point: abs(point["L_mH"] - target) / target
+                )
             )
-            optimum = min((point for point in grid if feasible(point, target)), key=lambda point: point["R_ohm"])
+            optimum = min(
+                (point for point in grid if feasible(point, target)),
+                key=lambda point: point["R_ohm"],
+            )
             qualified = feasible(decision, target)
             regret = decision["R_ohm"] / optimum["R_ohm"] - 1 if qualified else None
             loss = regret / (1 + regret) if qualified else 1.0
-            rows.append({
-                "method": "global_dual_gp", "budget": BUDGET, "seed": seed,
-                "target_mH": target, "qualified": qualified,
-                "relative_resistance_regret": regret, "bounded_loss_u": loss,
-                "decision_T": decision["T"], "decision_n": decision["n"],
-                "decision_L_mH": decision["L_mH"], "decision_R_ohm": decision["R_ohm"],
-            })
+            rows.append(
+                {
+                    "method": "global_dual_gp",
+                    "budget": BUDGET,
+                    "seed": seed,
+                    "target_mH": target,
+                    "qualified": qualified,
+                    "relative_resistance_regret": regret,
+                    "bounded_loss_u": loss,
+                    "decision_T": decision["T"],
+                    "decision_n": decision["n"],
+                    "decision_L_mH": decision["L_mH"],
+                    "decision_R_ohm": decision["R_ohm"],
+                }
+            )
         return rows
 
 
@@ -101,7 +133,8 @@ def metrics(rows):
     trimmed = [sum(sorted(by_target[target])[1:-1]) / 8 for target in TARGETS]
     return {
         "cases": len(rows),
-        "qualification_rate": sum(row["qualified"].lower() == "true" for row in rows) / len(rows),
+        "qualification_rate": sum(row["qualified"].lower() == "true" for row in rows)
+        / len(rows),
         "exact_optimum_cases": sum(value <= 1e-12 for value in losses),
         "exact_optimum_rate": sum(value <= 1e-12 for value in losses) / len(losses),
         "all_case_mean_u": sum(losses) / len(losses),
@@ -119,8 +152,13 @@ def main():
     if not 0 <= args.alpha <= 1:
         parser.error("alpha must lie in [0, 1]")
     tag = f"alpha_{args.alpha:g}".replace(".", "p")
-    output = (ROOT / "results" / "coil_2d_relative_tolerance" /
-              "global_dual_gp_budget27" / tag)
+    output = (
+        ROOT
+        / "results"
+        / "coil_2d_relative_tolerance"
+        / "global_dual_gp_budget27"
+        / tag
+    )
     results = output / "results.csv"
     output.mkdir(parents=True, exist_ok=True)
     completed = set()
@@ -139,18 +177,26 @@ def main():
                 rows = future.result()
                 writer.writerows(rows)
                 stream.flush()
-                print(f"checkpoint {index}/{len(tasks)} seed={rows[0]['seed']}", flush=True)
+                print(
+                    f"checkpoint {index}/{len(tasks)} seed={rows[0]['seed']}",
+                    flush=True,
+                )
     with results.open(newline="") as stream:
         rows = list(csv.DictReader(stream))
     summary = metrics(rows)
     write_json(output / "summary.json", summary)
-    write_json(output / "manifest.json", {
-        "status": "complete", "alpha": args.alpha, "seeds": list(SEEDS),
-        "targets_mH": list(TARGETS),
-        "acquisition": "(1-alpha)*sigma_L/s_L + alpha*sigma_R/s_R",
-        "scales": "fixed after the six initial observations",
-        "budget_composition": "17 reusable model-building evaluations + 10 final verifications per target",
-    })
+    write_json(
+        output / "manifest.json",
+        {
+            "status": "complete",
+            "alpha": args.alpha,
+            "seeds": list(SEEDS),
+            "targets_mH": list(TARGETS),
+            "acquisition": "(1-alpha)*sigma_L/s_L + alpha*sigma_R/s_R",
+            "scales": "fixed after the six initial observations",
+            "budget_composition": "17 reusable model-building evaluations + 10 final verifications per target",
+        },
+    )
     print(json.dumps(summary, indent=2))
 
 

@@ -1,6 +1,6 @@
 {
   "status": "complete",
-  "script": "/Users/saishangjiangnandong/Desktop/algorithm_discussion/essay/scripts/run_automatic_gp_2d.py",
+  "script": "essay/scripts/run_uncapped_automatic_2d.py",
   "deterministic": true,
   "seed_label_is_inert": true,
   "development_data_excluded": true

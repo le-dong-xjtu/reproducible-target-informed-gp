@@ -105,5 +105,5 @@
   ],
   "relative_tolerance": 0.025,
   "budget_composition": "6 initial + 11 cEI acquisitions + 10 final verifications",
-  "matched_control_for": "TC-FEI"
+  "matched_control_for": "target_conditioned_gp"
 }
