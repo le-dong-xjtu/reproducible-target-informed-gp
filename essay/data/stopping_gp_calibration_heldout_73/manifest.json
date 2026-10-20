@@ -1,8 +1,0 @@
-{
-  "status": "complete",
-  "script": "essay/scripts/analyze_stopping_gp_calibration.py",
-  "input": "essay/data/center_stopping_heldout_73/results.csv",
-  "targets": 73,
-  "configuration_frozen": true,
-  "confirmations_excluded": true
-}

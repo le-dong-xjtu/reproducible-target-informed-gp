@@ -1,0 +1,8 @@
+{
+  "status": "complete",
+  "script": "experiments/analyze_stopping_gp_calibration.py",
+  "input": "results/validation/center_stopping_heldout_73/results.csv",
+  "targets": 73,
+  "configuration_frozen": true,
+  "confirmations_excluded": true
+}

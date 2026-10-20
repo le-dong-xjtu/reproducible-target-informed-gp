@@ -1,0 +1,23 @@
+{
+  "status": "complete",
+  "script": "experiments/run_center_feasibility_low_targets.py",
+  "targets_mH": [
+    2,
+    3,
+    4,
+    5
+  ],
+  "seeds": [
+    20261015,
+    20261016,
+    20261017,
+    20261018,
+    20261019,
+    20261020,
+    20261021,
+    20261022,
+    20261023,
+    20261024
+  ],
+  "pre_uncertainty_weight": 0.25
+}

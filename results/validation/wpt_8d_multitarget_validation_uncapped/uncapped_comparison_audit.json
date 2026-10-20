@@ -1,0 +1,22 @@
+{
+  "automatic_mean_calls": 35.04761904761905,
+  "automatic_mean_R": 0.31486895518731395,
+  "conventional_mean_R": 0.31549202957059885,
+  "fixed50_mean_R": 0.30349575686820096,
+  "savings_percent": 29.9047619047619,
+  "resistance_penalty_percent": 3.7473994485043294,
+  "wins_ties_losses": [
+    8,
+    4,
+    9
+  ],
+  "wilcoxon_p": 0.981116590883351,
+  "feasible_counts": {
+    "conventional_cei_matched": 21,
+    "automated": 21,
+    "forced_b50": 21,
+    "center_pf_cei_matched": 21,
+    "conventional_cei_b50": 21,
+    "sobol_matched": 10
+  }
+}

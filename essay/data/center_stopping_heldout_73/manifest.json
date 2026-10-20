@@ -1,7 +1,0 @@
-{
-  "status": "complete",
-  "script": "essay/scripts/run_uncapped_automatic_2d.py",
-  "deterministic": true,
-  "seed_label_is_inert": true,
-  "development_data_excluded": true
-}
