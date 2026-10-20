@@ -31,7 +31,7 @@ Adaptive stopping, Bayesian optimization, constrained expected improvement, elec
 \end{IEEEkeywords}
 
 \section{Introduction}
-Electromagnetic design frequently requires matching a target physical response within a strict tolerance band $\epsilon$ while minimizing a competing objective. For a forward model returning a constrained response $g(x)$ and scalar objective $J(x)$ over design space $\mathcal X$, the target-conditioned optimization problem is
+Electromagnetic design frequently requires matching a target physical response $g_t$ within a strict relative tolerance band $\epsilon$ while minimizing a competing objective. For a forward model returning a constrained response $g(x)$ and scalar objective $J(x)$ over design space $\mathcal X$, the target-conditioned optimization problem is
 \begin{equation}
  \min_{x\in\mathcal X}J(x)\quad\mathrm{s.t.}\quad
  \frac{|g(x)-g_t|}{|g_t|}\leq\epsilon .
@@ -77,7 +77,7 @@ As a direct-search reference, we use simulated annealing (SA) \cite{kirkpatrick}
 \end{figure}
 
 \subsection{Target-Conditioned Acquisition}
-We model $L$ and $R$ with independent GPs and additive white-noise terms. The 2-D benchmark uses RBF kernels; WPT uses isotropic Mat\'ern-$5/2$ kernels, allowing less smooth functions and sharing one length scale across normalized coordinates \cite[ch.~4]{rasmussen}. For target $L_t$ and tolerance $\epsilon=0.025$, we compute the probability of satisfying the inductance constraint as
+We model $L$ and $R$ with independent GPs and additive white-noise terms. The 2-D benchmark uses RBF kernels; WPT uses isotropic Mat\'ern-$5/2$ kernels, allowing less smooth functions and sharing one length scale across normalized coordinates to limit hyperparameter count under small evaluation budgets \cite[ch.~4]{rasmussen}. For target $L_t$ and tolerance $\epsilon=0.025$, we compute the probability of satisfying the inductance constraint as
 \begin{equation}
  \begin{aligned}
  p_F(x) &= \Phi(z_+(x)) - \Phi(z_-(x)),\\
@@ -85,7 +85,7 @@ We model $L$ and $R$ with independent GPs and additive white-noise terms. The 2-
  \end{aligned}
  \label{eq:pf}
 \end{equation}
-where $\mu_L(x)$ and $\sigma_L(x)$ are the posterior mean and standard deviation, and $\Phi(\cdot)$ is the standard normal cumulative distribution function.
+where $\mu_L(x)$ and $\sigma_L(x)$ are the posterior mean and standard deviation, and $\Phi(\cdot)$ is the standard normal cumulative distribution function. Here, $L$ denotes the constrained inductive response, including mutual inductance $M$ in WPT.
 
 Once a feasible design has been observed, we select the next design by maximizing the constrained expected improvement (cEI) acquisition function $a_{\mathrm{cEI}}(x)=p_F(x)\mathrm{EI}_R(x)$, where
 \begin{equation}
@@ -216,7 +216,7 @@ All 21 runs stop naturally, including four at the $N_{\min}=17$ minimum. Relativ
 At 1500~nH, feasibility is first reached at evaluation 12 and model building stops after 34 evaluations. After 10 verification evaluations, the returned design has $M=1466.48$~nH and $R=305.77~\mathrm{m}\Omega$, only 3.98~nH above the lower bound. As Fig.~\ref{fig:reliability} illustrates, the random-six run requiring the most evaluations among the 10 seeds (seed 20261019) uses seven more evaluations than the deterministic run (51 versus 44, or 15.9\% more) and returns a higher resistance ($309.57$ versus $305.77~\mathrm{m}\Omega$). The selected deterministic Tx/Rx coils have 9/7 sides, 7/7 turns, 1.741/2.709~mm spacing, and 61.724/61.007~mm inner radii (Fig.~\ref{fig:wpt-geometry}).
 
 \subsection{Field-Solver Application Check}
-With Maxwell at 1000~nH, the automatic workflow stops after 20 model-building evaluations and performs 10 verification evaluations. We match this budget with six fixed Sobol points, 14 conventional-cEI evaluations, and 10 verification evaluations. Both methods find feasible designs: the automatic run returns $M=998.929$~nH and $R_{\mathrm{AC,Tx}}+R_{\mathrm{AC,Rx}}=383.68~\mathrm{m}\Omega$, compared with $1016.402$~nH and $389.54~\mathrm{m}\Omega$ for the baseline. It obtains seven feasible observations versus three, although the baseline reaches feasibility earlier (evaluation 6 versus 12). The returned AC resistance is 1.50\% lower for the automatic run. This experiment demonstrates that the workflow can operate directly with a 3-D field solver under the same optimization settings.
+With Maxwell at 1000~nH, the automatic workflow stops after 20 model-building evaluations and performs 10 verification evaluations. Each coil is modeled as a continuous solid-copper spiral with interior field solution enabled; adaptive solves use a 2\% error target, 30\% refinement, and two to four passes. We match the automatic budget with six fixed Sobol points, 14 conventional-cEI evaluations, and 10 verification evaluations. Both methods find feasible designs: the automatic run returns $M=998.929$~nH and $R_{\mathrm{AC,Tx}}+R_{\mathrm{AC,Rx}}=383.68~\mathrm{m}\Omega$, compared with $1016.402$~nH and $389.54~\mathrm{m}\Omega$ for the baseline. It obtains seven feasible observations versus three, although the baseline reaches feasibility earlier (evaluation 6 versus 12). The returned AC resistance is 1.50\% lower for the automatic run. This experiment demonstrates that the workflow can operate directly with a 3-D field solver under the same optimization settings.
 
 \begin{figure}[!t]
  \centering
